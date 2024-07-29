@@ -5,6 +5,7 @@ import random
 import json
 import pathlib
 
+# Jira Issue: YI-26
 
 class Command(BaseCommand):
     help = 'Seeds the database with hotel data'
