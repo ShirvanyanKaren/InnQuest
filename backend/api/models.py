@@ -11,7 +11,7 @@ class Hotel(models.Model):
     country = models.CharField(max_length=100, default=None)
     image_url = models.CharField(max_length=300, default=None)
 
-class Rooms(models.Model):
+class Room(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     type = models.CharField(max_length=100)
     price = models.FloatField()
@@ -24,7 +24,7 @@ class Rooms(models.Model):
 
 class Reservation(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, default=None)
-    guest = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
+    guest = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, blank=True)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, default=None)
     email = models.EmailField(default=None, null=True)
     check_in_date = models.DateField(default=None)
