@@ -8,8 +8,10 @@ class Hotel(models.Model):
     address = models.CharField(max_length=100, default=None)
     state= models.CharField(max_length=100, default=None)
     city = models.CharField(max_length=100, default=None)
+    amenities = ArrayField(models.CharField(max_length=100, blank=True, null=True), default=list)
+    description = models.TextField(default=None, null=True)
     country = models.CharField(max_length=100, default=None)
-    image_url = models.CharField(max_length=300, default=None)
+    image_urls = ArrayField(models.CharField(max_length=300), default=list)
 
 class Room(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
@@ -24,7 +26,7 @@ class Room(models.Model):
 
 class Reservation(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, default=None)
-    guest = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, blank=True)
+    guest = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, default=None)
     email = models.EmailField(default=None, null=True)
     check_in_date = models.DateField(default=None)
