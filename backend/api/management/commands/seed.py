@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api.models import Hotel
+from api.models import Hotel, Reservation, Room
 from faker import Faker
 import random
 import json
@@ -39,3 +39,4 @@ class Command(BaseCommand):
                     country='United States'
                 )
                 print(f'Created hotel: {hotel.name} in {hotel.city}, {hotel.state}')
+            
