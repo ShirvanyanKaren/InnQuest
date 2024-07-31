@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from api.models import Hotel
+from api.models import Hotel, Reservation, Room
 from faker import Faker
 import random
 import json
@@ -8,34 +8,75 @@ import pathlib
 # Jira Issue: YI-26
 
 class Command(BaseCommand):
-    help = 'Seeds the database with hotel data'
     seed_data = json.loads(open(pathlib.Path(__file__).parent / 'hotelseed.json').read())
     faker = Faker()
     company = "InnQuest Hotels"
+    amenities = ["Parking", "Air Conditioning", "Gym", "Pool", "Free Wi-Fi", "Connecting Rooms", "Bar", "Spa", "24/7 Front Desk", "Electric Vehicle Charging", "Restaurant", "Room Service", "Laundry Service", "Pet Friendly", "Non-smoking", "Breakfast Included", "Hot Tub"]
 
     def handle(self, *args, **kwargs):
         Hotel.objects.all().delete()
-        self._seed_hotels()
+        Room.objects.all().delete()
         self.stdout.write('Seeding data...')
+        self._seed_hotels()
 
     def _seed_hotels(self):
         cities = self.seed_data['hotel_cities']
+        descriptions = self.seed_data['hotel_descriptions']
         for city in cities:
             num_hotels = cities[city]['hotels']
             hotel_geo = [' ', ' East ', ' West ']
             images = cities[city]['images']
             base_zip = cities[city]['zip']
             for i in range(num_hotels):
+                interior_images = self.seed_data['hotel_interior'].copy()
                 image = random.choice(images)
                 images.remove(image)
+                image_urls = []
+                image_urls.append(image)
+                for _ in range(8):
+                    random_image = random.choice(interior_images)
+                    image_urls.append(random_image)
+                    interior_images.remove(random_image)
                 name = self.company + hotel_geo[i] + city
                 zip = base_zip + random.randint(1, 100)
+                mandatory_amenities = self.amenities[:3]
+                amenities = random.sample(self.amenities, random.randint(1, len(self.amenities)))
+                amenities = list(set(amenities + mandatory_amenities))
+                amenities_copy = amenities
+                description = random.choice(descriptions)
+                description = description.replace('%', city)
+                while '$' in description:
+                    description = description.replace('$', amenities_copy.pop(random.randint(0, len(amenities_copy) - 1)).lower(), 1)
                 hotel = Hotel.objects.create(
                     name=name,
                     address=' '.join(self.faker.address().split('\n')[0].split(' ')[0:3]) + ', ' + str(zip),
                     state=cities[city]['state'],
                     city=city,
-                    image_url=image,
+                    description=description,
+                    amenities=amenities,
+                    image_urls=image_urls,
                     country='United States'
                 )
                 print(f'Created hotel: {hotel.name} in {hotel.city}, {hotel.state}')
+        
+        def _seed_rooms(self):
+            hotels = Hotel.objects.all()
+            rooms = self.seed_data['rooms']
+            for hotel in hotels:
+                print(f'Creating rooms for {hotel.name} in {hotel.city}, {hotel.state}')
+                for room, dets in rooms.items():
+                    room = Room.objects.create(
+                        hotel=hotel,
+                        type=room,
+                        price=dets['price'],
+                        beds=dets['beds'],
+                        bed_type=dets['bed_type'],
+                        room_images=dets['images'],
+                        sleeps=dets['sleeps'],
+                        footage=dets['footage'],
+                        quantity=random.randint(12, 20)
+                    )
+                    print(f'Created room: {room.type} in hotel {hotel.name}')
+
+        
+            
