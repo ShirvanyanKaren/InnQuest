@@ -77,4 +77,6 @@ class Command(BaseCommand):
                         quantity=random.randint(12, 20)
                     )
                     print(f'Created room: {room.type} in hotel {hotel.name}')
+
+        
             
