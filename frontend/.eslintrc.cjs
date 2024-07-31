@@ -19,3 +19,12 @@ module.exports = {
     ],
   },
 }
+// command to logout of git
+// git config --global --unset credential.helper
+// command to login to git
+// git config --global credential.helper store
+
+
+
+
+
