@@ -41,5 +41,26 @@ h1, h2, h3, h4, h5, h6 {
   width: 5rem;
   height: 5rem;
   margin: 3%;
+}
 
+.logo {
+    height: 50px;
+    width: 50px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+  }
+
+  .navbar-brand {
+    font-size: xx-large;
+  }
+
+  .navbar{
+    box-shadow: 0 4px 6px 0 rgba(0,0,0,0.3);
+    .nav-links {
+      width: 30%;
+      .navbar-nav {
+        width: 100%;
+        justify-content: space-around;
+      }
+    }
 }
