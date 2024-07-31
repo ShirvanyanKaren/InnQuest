@@ -1,0 +1,45 @@
+// IMPORTS
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+// import a nice font from Google Fonts besides the default font above
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700&display=swap");
+
+// VARIABLES
+$primary-color: #f7fafc; /* New top header color */
+$secondary-color: #004aad; /* New light blue color */
+$third-color: #f1f1f1; /* New light grey color */
+$background-color: #eef0f2; /* New background color for the task bar */
+$text-color: #000000; /* Text color */
+$highlight-color: #ff0; /* Highlight color */
+$font-family: 'sans-serif'; /* Font family */
+$font-family-2: 'Open Sans', sans-serif; /* Font family 2 */
+$font-family-3: 'Nunito', sans-serif; /* Font family 3 */
+// nice light grey color for the background
+
+// STYLES
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: $background-color;
+  color: $text-color;
+  font-family: $font-family-3;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  font-family: $font-family-2;
+  
+}
+.spinner-border {
+  color: $secondary-color;
+  width: 5rem;
+  height: 5rem;
+  margin: 3%;
+
+}

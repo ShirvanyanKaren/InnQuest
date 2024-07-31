@@ -8,7 +8,6 @@ function App() {
     <>
     <div className="App">
       <Outlet />
-      <h1>App</h1>
     </div>
     </>
   )
