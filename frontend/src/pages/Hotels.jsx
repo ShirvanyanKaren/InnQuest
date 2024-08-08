@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getHotelsByCity } from "../../services/hotels";
+import { getHotelsByCity } from "../services/hotels";
 import Search from "../components/Search";
 import Loading from "../components/Loading";
 
@@ -34,7 +34,7 @@ const Hotels = () => {
                     <div className="col-md-4">
                         <div className="card">
                             <div className="card-body">
-                                <img src={hotel.image_url} 
+                                <img src={hotel.image_urls[0]} 
                                 style={{height: "200px", objectFit: "cover"}}
                                 alt={hotel.name} className="img-fluid" />
                                 <h5 className="card-title">{hotel.name}</h5>

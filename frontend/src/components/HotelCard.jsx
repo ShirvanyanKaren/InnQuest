@@ -1,18 +1,29 @@
 import { useEffect, useState } from 'react';
+import { getHotel } from '../services/hotels';
 import { Modal } from 'react-bootstrap';
-import Loading from './Loading';
 import ToolTip from './ToolTip';
 
 const HotelCard = ({ hotel, hotelId }) => {
     const [hotelData, setHotelData] = useState({});
 
     useEffect(() => {
+        console.log(hotelId, hotel, "hotel card");
+        if (Object.keys(hotel).length) setHotelData(hotel);
+        else {
+            getHotel(hotelId).then((response) => {
+                setHotelData(response.data[0]);
+            });
+        }
     }, []);
 
     return (
         <div className="card p-3 mt-3">
             {Object.keys(hotelData).length === 0 ? (
-                <Loading />
+                <div className="d-flex justify-content-center">
+                    <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             ) : (
                 <>
                     <div className='row container'>
