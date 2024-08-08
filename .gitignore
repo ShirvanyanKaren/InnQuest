@@ -136,5 +136,6 @@ dist
 .vscode
 package-lock.json
 env
+__pycache__
 # command to start py local env?
 # python3 -m venv env
