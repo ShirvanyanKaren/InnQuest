@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import { getHotelsByCity } from '../../services/hotels';
+import { getHotelsByCity } from '../services/hotels';
 import Loading from '../components/Loading';
 import Search from '../components/Search';
 

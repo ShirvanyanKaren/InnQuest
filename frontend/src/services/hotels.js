@@ -26,3 +26,16 @@ export const getHotel = async (id) => {
         return error;
     }
 }
+
+export const getHotelRooms = async (params) => {
+    try {
+        console.log(params);
+        const response = await api.get('/api/room/', {
+            params: params
+        });
+        return response;
+    }
+    catch (error) {
+        return error;
+    }
+}
