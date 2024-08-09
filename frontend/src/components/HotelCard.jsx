@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getHotel } from '../services/hotels';
+import { getHotel } from '../services/hotel';
 import { Modal } from 'react-bootstrap';
 import ToolTip from './ToolTip';
 

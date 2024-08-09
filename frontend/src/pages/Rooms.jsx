@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { getHotelRooms } from "../services/hotels";
+import { getHotelRooms } from "../services/hotel";
 import { useLocation } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { goToCheckout } from "../services/reservation";
 import { useSearchParams } from "react-router-dom";
-import { getHotel } from "../services/hotels";
+import { getHotel } from "../services/hotel";
 import ToolTip from "../components/ToolTip";
 import HotelCard from "../components/HotelCard";
 import ImagesSlider from "../components/ImageSlider";
