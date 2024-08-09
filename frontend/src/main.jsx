@@ -5,6 +5,7 @@ import App from './App';
 import ErrorPage from "./pages/ErrorPage";
 import Home from "./pages/Home";
 import Hotels from "./pages/Hotels";
+import Rooms from "./pages/Rooms";
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,11 @@ const router = createBrowserRouter([
       {
         path: '/search',
         element: <Hotels />
-      }
+      },
+      {
+        path: '/rooms/:hotel',
+        element: <Rooms />
+      }, 
     ]
   }
 ]
