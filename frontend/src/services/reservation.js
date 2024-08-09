@@ -1,5 +1,5 @@
 import api from "./api";
-import { getHotel } from "./hotels";
+import { getHotel } from "./hotel";
 
 export const goToCheckout = async (resInfo) => {
     try {

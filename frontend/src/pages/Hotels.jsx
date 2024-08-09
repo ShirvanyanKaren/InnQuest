@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getHotelsByCity, getHotelRooms } from "../services/hotels";
+import { getHotelsByCity, getHotelRooms } from "../services/hotel";
 import { useSearchParams } from "react-router-dom";
 import { stateAbbreviations } from "../utils/helpers";
 import { Link } from "react-router-dom";

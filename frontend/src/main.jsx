@@ -6,7 +6,8 @@ import ErrorPage from "./pages/ErrorPage";
 import Home from "./pages/Home";
 import Hotels from "./pages/Hotels";
 import Rooms from "./pages/Rooms";
-import Success from "./pages/Success"; 
+import Success from "./pages/Success";
+import Login from "./pages/Login"; 
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,15 @@ const router = createBrowserRouter([
       {
         path: '/success',
         element: <Success />
-      }
+      },
+      {
+        path: '/login',
+        element: <Login />
+      }, 
+      {
+        path: '/signup',
+        element: <Login />
+      },
     ]
   }
 ]
