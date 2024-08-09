@@ -4,6 +4,7 @@ from api.serializers.reservation import ReservationSerializer
 from api.models import Reservation, Room
 from django.http import JsonResponse, HttpResponse
 
+
 class ReservationAPIView(mixins.ListModelMixin,
                          mixins.CreateModelMixin,
                          mixins.UpdateModelMixin,
@@ -13,26 +14,55 @@ class ReservationAPIView(mixins.ListModelMixin,
     serializer_class = ReservationSerializer
 
     def get_permissions(self):
-        if self.request.method == 'POST':
-            return [AllowAny()]
-        if self.request.method == 'DELETE':
+        if self.request.method in ['POST', 'PUT', 'DELETE']:
             return [IsAuthenticated()]
         return [AllowAny()]
+
+    def get_queryset(self):
+        user = self.request.user
+        query_set = Reservation.objects.all()
+        hotel_id = self.request.query_params.get('hotel_id')
+        check_in_date = self.request.query_params.get('check_in_date')
+        check_out_date = self.request.query_params.get('check_out_date')
+        if user.is_authenticated:
+            return query_set.filter(guest=user)
+        else:
+            query_set = query_set.filter(hotel=hotel_id) if hotel_id else query_set
+            query_set = query_set.filter(check_in_date__gte=check_in_date, check_out_date__lte=check_out_date) if check_in_date and check_out_date else query_set
+        return query_set
     
+    def check_availability(self, request_data): 
+        reservations = Reservation.objects.filter(
+            hotel=request_data['hotel'],
+            room=request_data['room'],
+            check_in_date__lte=request_data['check_out_date'],
+            check_out_date__gte=request_data['check_in_date']
+        )
+        reserved_rooms = 0
+        for reservation in reservations:
+            reserved_rooms += reservation.num_of_rooms
+        room = Room.objects.get(id=request_data['room'])
+        return room.quantity - reserved_rooms
+
     def post(self, request, *args, **kwargs):
-        room = Room.objects.get(id=request.data['room'])
-        if room.quantity < request.data['num_of_rooms']:
-            return JsonResponse({'error': 'Not enough rooms available'}, status=400)
+        check_availability = self.check_availability(request.data)
+        if check_availability < request.data['num_of_rooms']:
+            return JsonResponse({'error': 'Not enough rooms available'}, status=409)
         return self.create(request, *args, **kwargs)
-    
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
     def put(self, request, *args, **kwargs):
-        reservation = Reservation.objects.get(id=request.data['id'])
-        room = Room.objects.get(id=request.data['room'])
-        if room.quantity < request.data['num_of_rooms']:
-            return JsonResponse({'error': 'Not enough rooms available'}, status=400)
         return self.update(request, *args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-    
-    
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(guest=user)
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        serializer.save(guest=user)
