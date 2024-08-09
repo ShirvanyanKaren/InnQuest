@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { getHotelRooms } from "../services/hotels";
 import { useLocation } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import { goToCheckout } from "../services/reservation";
 import { useSearchParams } from "react-router-dom";
 import { getHotel } from "../services/hotels";
 import ToolTip from "../components/ToolTip";
 import HotelCard from "../components/HotelCard";
 import ImagesSlider from "../components/ImageSlider";
-import api from "../services/api";
 import dayjs from "dayjs";
 
 const Rooms = () => {
@@ -72,8 +72,7 @@ const Rooms = () => {
             </div>
           </div>
         </div>
-        <Modal show={show}
-        onHide={handleClose}>
+        <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Booking</Modal.Title>
           </Modal.Header>
@@ -150,6 +149,7 @@ const Rooms = () => {
             </button>
             <button
               className="btn btn-primary"
+              onClick={() => getCheckoutSession(room)}
             >
               Book
             </button>
@@ -180,6 +180,37 @@ const Rooms = () => {
     setSearchParams(newParams);
   }
 
+  const getCheckoutSession = async (room) => {
+    const missingFields = [];
+    if (!params.get("check_in")) missingFields.push("check-in");
+    if (!params.get("check_out")) missingFields.push("check-out");
+    if (!params.get("rooms")) missingFields.push("number of rooms");
+    if (missingFields.length) {
+      const error = `Please select the ${missingFields.join(", ")}`;
+      setError(error);
+      return;
+    }
+    let resPrice = (room.price * Number(params.get("rooms")) * 1.1).toFixed(2);
+    const hotelId = window.location.pathname.split("/")[2];
+    const hotelName = hotelState.name || await getHotel(hotelId).then((response) => response.data[0].name);
+    console.log(hotelName);
+    const nights = dayjs(params.get("check_out")).diff(dayjs(params.get("check_in")), "day");
+    const reservation = {
+      hotel_name: hotelName,
+      image_url: room.room_images[0],
+      nights: nights,
+      reservation_price: Number(resPrice),
+      check_in_date: params.get("check_in"),
+      check_out_date: params.get("check_out"),
+      num_of_rooms: Number(params.get("rooms")),
+      room: room.id,
+      hotel: Number(hotelId),
+    };
+    localStorage.setItem("reservation", JSON.stringify(reservation));
+    const response = await goToCheckout(reservation);
+    const url = response.data.url;
+    window.location.replace(url);
+  };
 
   return (
     <div className="container">
