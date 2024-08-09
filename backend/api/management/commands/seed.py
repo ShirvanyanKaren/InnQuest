@@ -23,11 +23,12 @@ class Command(BaseCommand):
         self._seed_users()
         self._seed_hotels()
         self._seed_rooms()
+        self._seed_reservations()
         self.stdout.write('Data seeded successfully')
     
 
     def _seed_users(self):
-        for _ in range(100):
+        for _ in range(60):
             username = self.faker.email()
             email = username
             user = User.objects.create_user(
@@ -60,7 +61,7 @@ class Command(BaseCommand):
                 name = self.company + hotel_geo[i] + city
                 zip = base_zip + random.randint(1, 100)
                 mandatory_amenities = self.amenities[:3]
-                amenities = random.sample(self.amenities, random.randint(6, len(self.amenities)))
+                amenities = random.sample(self.amenities, random.randint(1, len(self.amenities)))
                 amenities = list(set(amenities + mandatory_amenities))
                 amenities_copy = amenities
                 description = random.choice(descriptions)
@@ -98,3 +99,25 @@ class Command(BaseCommand):
                     quantity=random.randint(12, 20)
                 )
                 print(f'Created room: {room.type} in hotel {hotel.name}')
+                
+
+    def _seed_reservations(self):
+        users = User.objects.all()
+        rooms = Room.objects.all()
+        for _ in range(700):
+            check_in_date = self.faker.date_between(start_date='today', end_date='+30d')
+            check_out_date = check_in_date + timedelta(days=random.randint(1, 10))
+            num_of_rooms = random.randint(1, 3)
+            room = random.choice(rooms)
+            price = (check_out_date - check_in_date).days * room.price * num_of_rooms
+            reservation = Reservation.objects.create(
+                room=room,
+                hotel=room.hotel,
+                guest=random.choice(users),
+                check_in_date=check_in_date,
+                check_out_date=check_out_date,
+                reservation_price=price,
+                num_of_rooms=num_of_rooms,
+                email=None
+            )
+            self.stdout.write(f'Created reservation for user: {reservation.guest.username} for room {reservation.room.type} with price {reservation.reservation_price} check in {reservation.check_in_date} check out {reservation.check_out_date}')
