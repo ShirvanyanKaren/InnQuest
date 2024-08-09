@@ -48,6 +48,7 @@ const Hotels = () => {
     hotelParams.min_price = params.get("min_price");
     hotelParams.max_price = params.get("max_price");
     const response = await getHotelsByCity(hotelParams)
+    console.log(response); 
     const hotelData = response.data;
     for (const hotel of hotelData) {
       if (hotel.rooms) hotel.rooms.sort((a, b) => a.price - b.price);

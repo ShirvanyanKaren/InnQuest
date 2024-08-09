@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand
-from api.models import Hotel, Reservation, Room
+from api.models import Hotel, Room, Reservation
+from django.contrib.auth.models import User
 from faker import Faker
 import random
 import json
 import pathlib
+from datetime import timedelta
 
-# Jira Issue: YI-26
 
 class Command(BaseCommand):
     seed_data = json.loads(open(pathlib.Path(__file__).parent / 'hotelseed.json').read())
@@ -14,10 +15,29 @@ class Command(BaseCommand):
     amenities = ["Parking", "Air Conditioning", "Gym", "Pool", "Free Wi-Fi", "Connecting Rooms", "Bar", "Spa", "24/7 Front Desk", "Electric Vehicle Charging", "Restaurant", "Room Service", "Laundry Service", "Pet Friendly", "Non-smoking", "Breakfast Included", "Hot Tub"]
 
     def handle(self, *args, **kwargs):
+        User.objects.all().delete()
         Hotel.objects.all().delete()
         Room.objects.all().delete()
+        Reservation.objects.all().delete()
         self.stdout.write('Seeding data...')
+        self._seed_users()
         self._seed_hotels()
+        self._seed_rooms()
+        self.stdout.write('Data seeded successfully')
+    
+
+    def _seed_users(self):
+        for _ in range(100):
+            username = self.faker.email()
+            email = username
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password='password',
+                first_name=self.faker.first_name(),
+                last_name=self.faker.last_name()
+            )
+            self.stdout.write(f'Created user: {user.username}')
 
     def _seed_hotels(self):
         cities = self.seed_data['hotel_cities']
@@ -40,7 +60,7 @@ class Command(BaseCommand):
                 name = self.company + hotel_geo[i] + city
                 zip = base_zip + random.randint(1, 100)
                 mandatory_amenities = self.amenities[:3]
-                amenities = random.sample(self.amenities, random.randint(1, len(self.amenities)))
+                amenities = random.sample(self.amenities, random.randint(6, len(self.amenities)))
                 amenities = list(set(amenities + mandatory_amenities))
                 amenities_copy = amenities
                 description = random.choice(descriptions)
@@ -58,25 +78,23 @@ class Command(BaseCommand):
                     country='United States'
                 )
                 print(f'Created hotel: {hotel.name} in {hotel.city}, {hotel.state}')
-        
-        def _seed_rooms(self):
-            hotels = Hotel.objects.all()
-            rooms = self.seed_data['rooms']
-            for hotel in hotels:
-                print(f'Creating rooms for {hotel.name} in {hotel.city}, {hotel.state}')
-                for room, dets in rooms.items():
-                    room = Room.objects.create(
-                        hotel=hotel,
-                        type=room,
-                        price=dets['price'],
-                        beds=dets['beds'],
-                        bed_type=dets['bed_type'],
-                        room_images=dets['images'],
-                        sleeps=dets['sleeps'],
-                        footage=dets['footage'],
-                        quantity=random.randint(12, 20)
-                    )
-                    print(f'Created room: {room.type} in hotel {hotel.name}')
 
-        
-            
+
+    def _seed_rooms(self):
+        hotels = Hotel.objects.all()
+        rooms = self.seed_data['rooms']
+        for hotel in hotels:
+            print(f'Creating rooms for {hotel.name} in {hotel.city}, {hotel.state}')
+            for room, dets in rooms.items():
+                room = Room.objects.create(
+                    hotel=hotel,
+                    type=room,
+                    price=dets['price'],
+                    beds=dets['beds'],
+                    bed_type=dets['bed_type'],
+                    room_images=dets['images'],
+                    sleeps=dets['sleeps'],
+                    footage=dets['footage'],
+                    quantity=random.randint(12, 20)
+                )
+                print(f'Created room: {room.type} in hotel {hotel.name}')
