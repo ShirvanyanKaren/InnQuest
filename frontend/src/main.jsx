@@ -8,6 +8,7 @@ import Hotels from "./pages/Hotels";
 import Rooms from "./pages/Rooms";
 import Success from "./pages/Success";
 import Login from "./pages/Login"; 
+import Reservations from "./pages/Reservations";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
         path: '/signup',
         element: <Login />
       },
+      {
+        path: '/reservations',
+        element: <Reservations />
+      }
     ]
   }
 ]
