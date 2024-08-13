@@ -1,0 +1,2 @@
+export const UPDATE_HOTELS = 'UPDATE_HOTELS';
+export const UPDATE_SEARCHES = 'UPDATE_SEARCHES';
