@@ -9,9 +9,12 @@ import ToolTip from "../components/ToolTip";
 import HotelCard from "../components/HotelCard";
 import ImagesSlider from "../components/ImageSlider";
 import dayjs from "dayjs";
+import Auth from "../utils/auth";
+
 
 const Rooms = () => {
   const [rooms, setRooms] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
   const [params, setSearchParams] = useSearchParams();
@@ -42,6 +45,61 @@ const Rooms = () => {
     setNumBeds(filter);
   }
 
+
+
+  const handleClose = () => {
+    setShow(false);
+    setSelectedRoom(null);
+    setError("");
+  };
+
+  const handleChange = (e) => {
+    if (e.target.id === "rooms") {
+      setReservationPrice(
+        (rooms[0]?.price * e.target.value * 1.1).toFixed(2),
+      );
+      console.log(reservationPrice, rooms[0]?.price, e.target.value);
+    } 
+    const newParams = new URLSearchParams(params);
+    newParams.set(e.target.id, e.target.value);
+    setSearchParams(newParams);
+  }
+
+  const getCheckoutSession = async (room) => {
+
+    if (!selectedRoom) return;
+    const missingFields = [];
+    if (!params.get("check_in")) missingFields.push("check-in");
+    if (!params.get("check_out")) missingFields.push("check-out");
+    if (!params.get("rooms")) missingFields.push("number of rooms");
+    if (missingFields.length) {
+      const error = `Please select the ${missingFields.join(", ")}`;
+      setError(error);
+      return;
+    }
+    let resPrice = (selectedRoom.price * Number(params.get("rooms")) * 1.1).toFixed(2);
+    const hotelId = window.location.pathname.split("/")[2];
+    const hotelName = hotelState.name || await getHotel(hotelId).then((response) => response.data[0].name);
+    console.log(hotelName);
+    const nights = dayjs(params.get("check_out")).diff(dayjs(params.get("check_in")), "day");
+    const reservation = {
+      hotel_name: hotelName,
+      image_url: selectedRoom.room_images[0],
+      nights: nights,
+      reservation_price: Number(resPrice),
+      check_in_date: params.get("check_in"),
+      check_out_date: params.get("check_out"),
+      num_of_rooms: Number(params.get("rooms")),
+      room: selectedRoom.id,
+      hotel: Number(hotelId),
+    };
+    localStorage.setItem("reservation", JSON.stringify(reservation));
+    const response = await goToCheckout(reservation);
+    const url = response.data.url;
+    window.location.replace(url);
+  };
+
+
   const filterRooms = () => {
     return (
     <>
@@ -65,7 +123,10 @@ const Rooms = () => {
             <h3 className="card-text">${room.price}</h3>
             <button
               className="btn btn-primary"
-              onClick={() => setShow(true)}
+              onClick={() => {
+                setShow(true);
+                setSelectedRoom(room);
+              }}
             >
               Reserve
             </button>
@@ -77,6 +138,7 @@ const Rooms = () => {
             <Modal.Title>Booking</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            {Auth.loggedIn() ? null : (
               <div className="form-group">
                 <label htmlFor="email">Email address</label>
                 <input
@@ -85,6 +147,7 @@ const Rooms = () => {
                   id="email"
                 />
               </div>
+            )}
             <div className="form-group">
               <label htmlFor="checkin">Check-in</label>
               <input
@@ -117,7 +180,6 @@ const Rooms = () => {
                 className="form-control"
                 id="rooms"
                 value={Number(params.get("rooms"))}
-                defaultValue={Number(params.get("rooms"))}
                 onChange={handleChange}
               />
             </div>
@@ -128,8 +190,7 @@ const Rooms = () => {
                 className="form-control bg-light"
                 id="total"
                 value={`$${
-                  reservationPrice ||
-                  (room.price * Number(params.get("rooms")) * 1.1).toFixed(2)
+                  (selectedRoom?.price * Number(params.get("rooms")) * 1.1).toFixed(2)
                 }`}
                 disabled
               />
@@ -149,7 +210,7 @@ const Rooms = () => {
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => getCheckoutSession(room)}
+              onClick={() => getCheckoutSession()}
             >
               Book
             </button>
@@ -160,57 +221,6 @@ const Rooms = () => {
     </>
   )
   }
-
-
-
-  const handleClose = () => {
-    setShow(false);
-    setError("");
-  };
-
-  const handleChange = (e) => {
-    if (e.target.id === "rooms") {
-      setReservationPrice(
-        (rooms[0]?.price * e.target.value * 1.1).toFixed(2),
-      );
-      console.log(reservationPrice, rooms[0]?.price, e.target.value);
-    } 
-    const newParams = new URLSearchParams(params);
-    newParams.set(e.target.id, e.target.value);
-    setSearchParams(newParams);
-  }
-
-  const getCheckoutSession = async (room) => {
-    const missingFields = [];
-    if (!params.get("check_in")) missingFields.push("check-in");
-    if (!params.get("check_out")) missingFields.push("check-out");
-    if (!params.get("rooms")) missingFields.push("number of rooms");
-    if (missingFields.length) {
-      const error = `Please select the ${missingFields.join(", ")}`;
-      setError(error);
-      return;
-    }
-    let resPrice = (room.price * Number(params.get("rooms")) * 1.1).toFixed(2);
-    const hotelId = window.location.pathname.split("/")[2];
-    const hotelName = hotelState.name || await getHotel(hotelId).then((response) => response.data[0].name);
-    console.log(hotelName);
-    const nights = dayjs(params.get("check_out")).diff(dayjs(params.get("check_in")), "day");
-    const reservation = {
-      hotel_name: hotelName,
-      image_url: room.room_images[0],
-      nights: nights,
-      reservation_price: Number(resPrice),
-      check_in_date: params.get("check_in"),
-      check_out_date: params.get("check_out"),
-      num_of_rooms: Number(params.get("rooms")),
-      room: room.id,
-      hotel: Number(hotelId),
-    };
-    localStorage.setItem("reservation", JSON.stringify(reservation));
-    const response = await goToCheckout(reservation);
-    const url = response.data.url;
-    window.location.replace(url);
-  };
 
   return (
     <div className="container">
