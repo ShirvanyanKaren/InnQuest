@@ -1,5 +1,5 @@
 import { setKey, fromLatLng } from "react-geocode";
-import { getHotelsByCity } from "../services/hotels";
+import { getHotelsByCity } from "../services/hotel";
 
 export const getUserLocation = async (setHotels, setLocation) => {
     const permission = await navigator.permissions.query({ name: 'geolocation' });
