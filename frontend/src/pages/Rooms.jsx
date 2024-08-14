@@ -25,14 +25,13 @@ const Rooms = () => {
   const hotelState = location.state || {};
   const [hotelId, setHotelId] = useState("");
   const [numBeds, setNumBeds] = useState("allRooms");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
-    console.log(hotelState);
     const hotelId = window.location.pathname.split("/")[2];
     const params = { hotel_id: hotelId };
     setHotelId(hotelId);
     getHotelRooms(params).then((response) => {
-      console.log(response.data);
       setRooms(response?.data);
       setLoading(false);
     });
@@ -41,10 +40,8 @@ const Rooms = () => {
   
   const handleFilter = (e) => {
     const filter = e.target.id;
-    console.log(filter);
     setNumBeds(filter);
   }
-
 
 
   const handleClose = () => {
@@ -53,45 +50,59 @@ const Rooms = () => {
     setError("");
   };
 
+  const handleShow = (room) => { 
+    let numOfNights = Number(dayjs(params.get("check_out")).diff(dayjs(params.get("check_in")), "day"));
+    let rooms = Number(params.get("rooms"));
+    let price = room.price * 1.1 * rooms * numOfNights
+    setSelectedRoom(room);
+    setShow(true);
+    setReservationPrice(price.toString() !== "NaN" ? price.toFixed(2) : 0);
+  };
+
   const handleChange = (e) => {
-    if (e.target.id === "rooms") {
-      setReservationPrice(
-        (rooms[0]?.price * e.target.value * 1.1).toFixed(2),
-      );
-      console.log(reservationPrice, rooms[0]?.price, e.target.value);
+    if (e.target.id === "rooms" || e.target.id === "check_out" || e.target.id === "check_in") {
+      let rooms = Number(params.get("rooms"));
+      let checkIn = params.get("check_in");
+      let checkOut = params.get("check_out");
+      if (e.target.id === "rooms") rooms = e.target.value;
+      else if (e.target.id === "check_in") checkIn = e.target.value;
+      else if (e.target.id === "check_out") checkOut = e.target.value;
+      let numOfNights = Number(dayjs(checkOut).diff(dayjs(checkIn), "day"));
+      let price = selectedRoom.price * 1.1 * rooms * numOfNights
+      setReservationPrice(price.toString() !== "NaN" ? price.toFixed(2) : 0);
     } 
     const newParams = new URLSearchParams(params);
     newParams.set(e.target.id, e.target.value);
     setSearchParams(newParams);
+
   }
 
   const getCheckoutSession = async (room) => {
-
-    if (!selectedRoom) return;
     const missingFields = [];
+    if (!selectedRoom) return;
+    if (!email && !Auth.loggedIn()) missingFields.push("email");
     if (!params.get("check_in")) missingFields.push("check-in");
     if (!params.get("check_out")) missingFields.push("check-out");
     if (!params.get("rooms")) missingFields.push("number of rooms");
     if (missingFields.length) {
-      const error = `Please select the ${missingFields.join(", ")}`;
+      const error = `Please enter ${missingFields.join(", ")}`;
       setError(error);
       return;
     }
-    let resPrice = (selectedRoom.price * Number(params.get("rooms")) * 1.1).toFixed(2);
     const hotelId = window.location.pathname.split("/")[2];
     const hotelName = hotelState.name || await getHotel(hotelId).then((response) => response.data[0].name);
-    console.log(hotelName);
     const nights = dayjs(params.get("check_out")).diff(dayjs(params.get("check_in")), "day");
     const reservation = {
       hotel_name: hotelName,
       image_url: selectedRoom.room_images[0],
       nights: nights,
-      reservation_price: Number(resPrice),
+      reservation_price: Number(reservationPrice),
       check_in_date: params.get("check_in"),
       check_out_date: params.get("check_out"),
       num_of_rooms: Number(params.get("rooms")),
       room: selectedRoom.id,
       hotel: Number(hotelId),
+      email: email
     };
     localStorage.setItem("reservation", JSON.stringify(reservation));
     const response = await goToCheckout(reservation);
@@ -124,8 +135,7 @@ const Rooms = () => {
             <button
               className="btn btn-primary"
               onClick={() => {
-                setShow(true);
-                setSelectedRoom(room);
+                handleShow(room);
               }}
             >
               Reserve
@@ -145,6 +155,8 @@ const Rooms = () => {
                   type="email"
                   className="form-control"
                   id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             )}
@@ -189,9 +201,7 @@ const Rooms = () => {
                 type="text"
                 className="form-control bg-light"
                 id="total"
-                value={`$${
-                  (selectedRoom?.price * Number(params.get("rooms")) * 1.1).toFixed(2)
-                }`}
+                value={`$${reservationPrice}`}
                 disabled
               />
             </div>

@@ -33,6 +33,6 @@ class StripeCheckout(generics.CreateAPIView):
                 }
             ],
             mode="payment",
-            cancel_url=os.getenv('STRIPE_CANCEL_URL')
+            cancel_url=f"{os.getenv('STRIPE_CANCEL_URL')}rooms/{data['hotel']}?check_in={data['check_in_date']}&check_out={data['check_out_date']}&rooms={data['num_of_rooms']}"
         )
         return JsonResponse({'url': session.url})

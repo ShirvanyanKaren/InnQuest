@@ -7,7 +7,6 @@ const HotelCard = ({ hotel, hotelId }) => {
     const [hotelData, setHotelData] = useState({});
 
     useEffect(() => {
-        console.log(hotelId, hotel, "hotel card");
         if (Object.keys(hotel).length) setHotelData(hotel);
         else {
             getHotel(hotelId).then((response) => {

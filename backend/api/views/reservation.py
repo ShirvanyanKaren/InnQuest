@@ -14,7 +14,7 @@ class ReservationAPIView(mixins.ListModelMixin,
     serializer_class = ReservationSerializer
 
     def get_permissions(self):
-        if self.request.method in ['POST', 'PUT', 'DELETE']:
+        if self.request.method in ['GET','PUT', 'DELETE']:
             return [IsAuthenticated()]
         return [AllowAny()]
 
@@ -25,6 +25,10 @@ class ReservationAPIView(mixins.ListModelMixin,
         check_in_date = self.request.query_params.get('check_in_date')
         check_out_date = self.request.query_params.get('check_out_date')
         if user.is_authenticated:
+            reservations = query_set.filter(email=user.email, guest=None)
+            for reservation in reservations:
+                reservation.guest = user
+                reservation.save()
             return query_set.filter(guest=user)
         else:
             query_set = query_set.filter(hotel=hotel_id) if hotel_id else query_set
@@ -48,7 +52,17 @@ class ReservationAPIView(mixins.ListModelMixin,
         check_availability = self.check_availability(request.data)
         if check_availability < request.data['num_of_rooms']:
             return JsonResponse({'error': 'Not enough rooms available'}, status=409)
-        return self.create(request, *args, **kwargs)
+        else:
+            reservation = Reservation.objects.create(
+                hotel_id=request.data['hotel'],
+                room_id=request.data['room'],
+                check_in_date=request.data['check_in_date'],
+                reservation_price=request.data['reservation_price'],
+                check_out_date=request.data['check_out_date'],
+                num_of_rooms=request.data['num_of_rooms'],
+                email=request.data['email'] if not self.request.user.is_authenticated else self.request.user.email
+            )
+            return JsonResponse({'message': 'Reservation created successfully', 'reservation': ReservationSerializer(reservation).data}, status=201)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
