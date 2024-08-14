@@ -11,5 +11,5 @@ urlpatterns = [
     path("reservation/", ReservationAPIView.as_view(), name="reservation-list"),
     path("reservation/<int:pk>/", ReservationAPIView.as_view(), name="reservation-detail"),
     path("checkout/", StripeCheckout.as_view(), name="stripe-checkout"),
-    path("user/", UserView.as_view(), name="user-list"),
+    path("user/", UserView.as_view(), name="user-list")
 ]

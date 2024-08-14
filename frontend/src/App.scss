@@ -8,6 +8,7 @@
 $primary-color: #f7fafc; /* New top header color */
 $secondary-color: #004aad; /* New light blue color */
 $third-color: #f1f1f1; /* New light grey color */
+$fourth-color: #929090; /* New light grey color */
 $background-color: #eef0f2; /* New background color for the task bar */
 $text-color: #000000; /* Text color */
 $highlight-color: #ff0; /* Highlight color */
@@ -140,7 +141,6 @@ label {
 }
 
 .search-term{
-
   font-style:italic;
 }
 
@@ -160,4 +160,25 @@ label {
 
 .carousel-control-prev-icon {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l1.5 1.5-2.5 2.5 2.5 2.5-1.5 1.5-4-4 4-4z'/%3E%3C/svg%3E") !important;
+}
+
+.modal-backdrop {
+    background-color: #00000054;
+  }
+
+.card-header {
+  background-color: $secondary-color;
+  color: $primary-color;
+  font-weight: bold;
+}
+
+.btn-primary {
+ background-color: $secondary-color;
+}
+.reservation-details {
+    li {
+        border-bottom: 1px solid $fourth-color;
+        padding: 5px;
+        font-size: 1.1rem;
+    }
 }

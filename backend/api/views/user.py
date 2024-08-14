@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from api.models import Reservation
 from rest_framework import generics, mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from api.serializers.user import UserSerializer
@@ -12,6 +13,8 @@ class UserView(mixins.ListModelMixin,
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return self.list(request, *args, **kwargs)
         return self.list(request, *args, **kwargs)
     def post(self, request, *args, **kwargs):
         try: 

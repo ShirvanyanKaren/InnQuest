@@ -61,7 +61,7 @@ class Command(BaseCommand):
                 name = self.company + hotel_geo[i] + city
                 zip = base_zip + random.randint(1, 100)
                 mandatory_amenities = self.amenities[:3]
-                amenities = random.sample(self.amenities, random.randint(1, len(self.amenities)))
+                amenities = random.sample(self.amenities, random.randint(8, len(self.amenities)))
                 amenities = list(set(amenities + mandatory_amenities))
                 amenities_copy = amenities
                 description = random.choice(descriptions)

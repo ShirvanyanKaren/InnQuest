@@ -32,11 +32,11 @@ export const getUserLocation = async (setHotels, setLocation) => {
 
 export const idbPromise = (storeName, method, object) => {
   return new Promise((resolve, reject) => {
-    const request = window.indexedDB.open('shop-shop', 1);
+    const request = window.indexedDB.open(storeName, 1);
     let db, tx, store;
     request.onupgradeneeded = function(e) {
       const db = request.result;
-      db.createObjectStore('', { keyPath: '_id' });
+      db.createObjectStore(storeName, { keyPath: 'id' });
     };
     request.onerror = function(e) {
       console.log('There was an error');
@@ -59,11 +59,11 @@ export const idbPromise = (storeName, method, object) => {
           resolve(all.result);
         };
       } else if (method === 'delete') {
-        store.delete(object._id);
+        store.delete(object.id);
         resolve(object);
       } else if (method === 'clear') {
         store.clear();
-        resolve('Cleared cart');
+        resolve('Cleared store');
       }
 
       tx.oncomplete = function() {

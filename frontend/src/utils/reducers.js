@@ -5,6 +5,7 @@ import {
 export const initialState = {
     viewedHotels: {},
     recentSearches: {},
+    reservations: {}
 }
 
 export const reducer = (state= initialState, action) => {
