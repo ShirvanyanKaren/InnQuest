@@ -62,11 +62,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "api",
-    "api.views.hotel",
-    "api.views.user",
-    "api.views.checkout",
-    "api.views.reservation",
-    "api.views.room",
     "rest_framework",
     "corsheaders"
 ]

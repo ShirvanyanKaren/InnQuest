@@ -19,7 +19,6 @@ class ApiConfig(AppConfig):
         pydoc.writedoc('api.views.room.RoomAPIView')
         pydoc.writedoc('api.views.user.UserView')
         pydoc.writedoc('api.management.commands.seed.Command')
-        pydoc.writedoc('api.reservation.reservation.ReservationView')
         pydoc.writedoc('api.serializers.reservation')
         pydoc.writedoc('api.serializers.room')
         pydoc.writedoc('api.serializers.user')
