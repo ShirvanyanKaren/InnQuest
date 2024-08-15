@@ -9,6 +9,14 @@ from django.http import JsonResponse, HttpResponse
 class UserView(mixins.ListModelMixin,
                 mixins.CreateModelMixin,
                 generics.GenericAPIView):
+    """
+    User
+    08/08/2024
+    Porfirio Tavira & Karen Shirvanyan
+    User controller that does the GET POST and DELETE for the User Class
+    this class uses the User model and serializer to be utilized by the frontend.
+    This class also passes in the information to authenticate user to see reservations.    
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]

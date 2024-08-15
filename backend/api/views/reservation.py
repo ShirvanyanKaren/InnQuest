@@ -10,6 +10,12 @@ class ReservationAPIView(mixins.ListModelMixin,
                          mixins.UpdateModelMixin,
                          mixins.DestroyModelMixin,
                          generics.GenericAPIView):
+    """
+    ReservationAPIView
+    08/08/2024
+    Karen Shirvanyan
+    Class that hangles the GET PUT And DELETE of the Reservation Class. Utilizes Reservation Model 
+    """
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 

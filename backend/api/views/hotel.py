@@ -4,16 +4,19 @@ from api.serializers.hotel import HotelSerializer
 from api.serializers.room import RoomSerializer
 from rest_framework.response import Response
 from api.models import Hotel, Reservation, Room
-
-
 class HotelAPIView(mixins.ListModelMixin,
                      mixins.CreateModelMixin,
                      mixins.DestroyModelMixin,
                      generics.GenericAPIView):
+     """
+     HotelAPIView
+     07/25/2024
+     Porfirio Tavira
+     Hotel controller that does the GET POST and DELETE for the Hotel Class
+     This class uses the Hotel model and serializer to be utilized by the frontend
+     """
      queryset = Hotel.objects.all()
      serializer_class = HotelSerializer
-
-    
      def get_permissions(self):
           if self.request.method == 'POST':
                 return [AllowAny()]
@@ -25,6 +28,7 @@ class HotelAPIView(mixins.ListModelMixin,
           return Hotel.objects.filter(id=id)
      
      def get_available_rooms(self, queryset, start_date, end_date, num_of_rooms, min_price, max_price):
+          """Get for getting available rooms for a given hotels. Filters by price and number of rooms as well as start and end date"""
           hotels = []
           for hotel in queryset:
                 reservations = Reservation.objects.filter(
@@ -50,6 +54,7 @@ class HotelAPIView(mixins.ListModelMixin,
           return hotels
                
      def list(self, request, *args, **kwargs):
+
           queryset = self.get_queryset()
           if 'check_in' in request.query_params and 'check_out' in request.query_params and 'rooms' in request.query_params:
                 available_rooms = self.get_available_rooms(
@@ -66,6 +71,7 @@ class HotelAPIView(mixins.ListModelMixin,
 
      
      def get_queryset(self):
+          """Queries according to the parameter being passsed whether it be the id or a string that is used to query any state or city that mathches the string"""
           params = self.request.query_params
           if params.get('hotel_id'):
                 return self.get_by_id(params.get('hotel_id'))

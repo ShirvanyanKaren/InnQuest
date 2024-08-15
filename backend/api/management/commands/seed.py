@@ -7,8 +7,13 @@ import json
 import pathlib
 from datetime import timedelta
 
-
 class Command(BaseCommand):
+    """  
+    Command
+    07/25/2024
+    Robert Paronyan
+    Seed class that generates data to test backend, frontend and db
+    """
     seed_data = json.loads(open(pathlib.Path(__file__).parent / 'hotelseed.json').read())
     faker = Faker()
     company = "InnQuest Hotels"
@@ -41,6 +46,7 @@ class Command(BaseCommand):
             self.stdout.write(f'Created user: {user.username}')
 
     def _seed_hotels(self):
+        """Seed method for hotels that generates hotel information data along with images scrapped from the internet"""
         cities = self.seed_data['hotel_cities']
         descriptions = self.seed_data['hotel_descriptions']
         for city in cities:

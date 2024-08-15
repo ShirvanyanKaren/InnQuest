@@ -7,6 +7,13 @@ from django.http import JsonResponse, HttpResponse
 
 class RoomAPIView(generics.GenericAPIView, mixins.ListModelMixin,
                   mixins.CreateModelMixin, mixins.DestroyModelMixin):
+    """
+    RoomAPIView
+    08/06/2024
+    Porfirio Tavira & Karen Shirvanyan
+    Room controller that does the GET POST and DELETE for the Room Class
+    his class uses the Room model and serializer to be utilized by the frontend    
+    """
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
@@ -18,6 +25,9 @@ class RoomAPIView(generics.GenericAPIView, mixins.ListModelMixin,
         return [AllowAny()]
 
     def get_available_rooms(self, start_date, end_date, hotel_id, num_of_rooms):
+        """
+        Gets available rooms using the start date end data hotel id and numbers of rooms to filter the available rooms
+        """
         reservations = Reservation.objects.filter(
             hotel=hotel_id,
             check_in_date__lte=end_date,
