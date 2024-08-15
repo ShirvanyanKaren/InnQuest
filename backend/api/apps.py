@@ -20,3 +20,4 @@ class ApiConfig(AppConfig):
         pydoc.writedoc('api.views.user.UserView')
         pydoc.writedoc('api.management.commands.seed.Command')
         pydoc.writedoc('api.reservation.reservation.ReservationView')
+        pydoc.writedoc('api.serializers.reservation')
