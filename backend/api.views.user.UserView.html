@@ -11,12 +11,9 @@
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>api.views.user.UserView(**kwargs)<br>
 &nbsp;<br>
-User<br>
-08/08/2024<br>
-Porfirio&nbsp;Tavira&nbsp;&amp;&nbsp;Karen&nbsp;Shirvanyan<br>
-User&nbsp;controller&nbsp;that&nbsp;does&nbsp;the&nbsp;GET&nbsp;POST&nbsp;and&nbsp;DELETE&nbsp;for&nbsp;the&nbsp;User&nbsp;Class<br>
-this&nbsp;class&nbsp;uses&nbsp;the&nbsp;User&nbsp;model&nbsp;and&nbsp;serializer&nbsp;to&nbsp;be&nbsp;utilized&nbsp;by&nbsp;the&nbsp;frontend.<br>
-This&nbsp;class&nbsp;also&nbsp;passes&nbsp;in&nbsp;the&nbsp;information&nbsp;to&nbsp;authenticate&nbsp;user&nbsp;to&nbsp;see&nbsp;reservations.<br>&nbsp;</tt></td></tr>
+Date:&nbsp;(August&nbsp;8th,&nbsp;2024)<br>
+Author:&nbsp;Porfirio&nbsp;Tavira<br>
+Description:&nbsp;This&nbsp;class&nbsp;is&nbsp;a&nbsp;view&nbsp;for&nbsp;the&nbsp;User&nbsp;model.&nbsp;It&nbsp;allows&nbsp;users&nbsp;to&nbsp;create&nbsp;a&nbsp;new&nbsp;account&nbsp;and&nbsp;also&nbsp;enables&nbsp;get&nbsp;request&nbsp;to&nbsp;list&nbsp;all&nbsp;users.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="api.views.user.html#UserView">UserView</a></dd>
@@ -29,17 +26,27 @@ This&nbsp;class&nbsp;also&nbsp;passes&nbsp;in&nbsp;the&nbsp;information&nbsp;to&
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="UserView-get"><strong>get</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="UserView-get"><strong>get</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;List&nbsp;of&nbsp;users&nbsp;as&nbsp;class&nbsp;object&nbsp;UserSerializer<br>
+@exception:&nbsp;If&nbsp;user&nbsp;is&nbsp;not&nbsp;authenticated,&nbsp;return&nbsp;list&nbsp;of&nbsp;users<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;users&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;authenticated,&nbsp;otherwise&nbsp;it&nbsp;returns&nbsp;an&nbsp;empty&nbsp;list.</tt></dd></dl>
 
-<dl><dt><a name="UserView-post"><strong>post</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="UserView-post"><strong>post</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;HttpResponse&nbsp;object<br>
+@exception:&nbsp;If&nbsp;user&nbsp;is&nbsp;not&nbsp;authenticated,&nbsp;create&nbsp;a&nbsp;new&nbsp;user<br>
+@precondition:&nbsp;username:&nbsp;str,&nbsp;email:&nbsp;str,&nbsp;password:&nbsp;str,&nbsp;first_name:&nbsp;str,&nbsp;last_name:&nbsp;str<br>
+Description:&nbsp;This&nbsp;method&nbsp;creates&nbsp;a&nbsp;new&nbsp;user&nbsp;if&nbsp;the&nbsp;data&nbsp;is&nbsp;valid,&nbsp;otherwise&nbsp;it&nbsp;returns&nbsp;an&nbsp;error&nbsp;message.</tt></dd></dl>
 
 <hr>
 Data and other attributes defined here:<br>
 <dl><dt><strong>permission_classes</strong> = [&lt;class 'rest_framework.permissions.AllowAny'&gt;]</dl>
 
-<dl><dt><strong>queryset</strong> = &lt;QuerySet [&lt;User: melissa03@example.org&gt;, &lt;User:...le.net&gt;, '...(remaining elements truncated)...']&gt;</dl>
+<dl><dt><strong>queryset</strong> = &lt;QuerySet [&lt;User: montgomerysusan@example.net&gt;, ...le.com&gt;, '...(remaining elements truncated)...']&gt;</dl>
 
-<dl><dt><strong>serializer_class</strong> = &lt;class 'api.serializers.user.UserSerializer'&gt;</dl>
+<dl><dt><strong>serializer_class</strong> = &lt;class 'api.serializers.user.UserSerializer'&gt;<dd><tt>Date:&nbsp;(August&nbsp;8th,&nbsp;2024)<br>
+Author:&nbsp;Porfirio&nbsp;Tavira<br>
+Description:&nbsp;This&nbsp;serializer&nbsp;handles&nbsp;the&nbsp;conversion&nbsp;of&nbsp;User&nbsp;model&nbsp;instances&nbsp;to&nbsp;and&nbsp;from&nbsp;JSON&nbsp;format.&nbsp;<br>
+It&nbsp;manages&nbsp;the&nbsp;validation&nbsp;and&nbsp;serialization&nbsp;of&nbsp;user-related&nbsp;data,&nbsp;particularly&nbsp;for&nbsp;registration&nbsp;and&nbsp;user&nbsp;profile&nbsp;updates.</tt></dl>
 
 <hr>
 Methods inherited from <a href="rest_framework.mixins.html#ListModelMixin">rest_framework.mixins.ListModelMixin</a>:<br>
