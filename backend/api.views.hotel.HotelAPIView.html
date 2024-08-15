@@ -29,27 +29,56 @@ This&nbsp;class&nbsp;uses&nbsp;the&nbsp;Hotel&nbsp;model&nbsp;and&nbsp;serialize
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="HotelAPIView-delete"><strong>delete</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="HotelAPIView-delete"><strong>delete</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;Response&nbsp;object<br>
+@exception:&nbsp;If&nbsp;user&nbsp;is&nbsp;not&nbsp;authenticated,&nbsp;delete&nbsp;a&nbsp;hotel<br>
+Description:&nbsp;This&nbsp;method&nbsp;deletes&nbsp;a&nbsp;hotel&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;authenticated,&nbsp;otherwise&nbsp;it&nbsp;returns&nbsp;an&nbsp;error&nbsp;message.</tt></dd></dl>
 
-<dl><dt><a name="HotelAPIView-get"><strong>get</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="HotelAPIView-get"><strong>get</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;List&nbsp;of&nbsp;hotels<br>
+@exception:&nbsp;If&nbsp;user&nbsp;is&nbsp;not&nbsp;authenticated,&nbsp;return&nbsp;list&nbsp;of&nbsp;hotels<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;hotels&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;authenticated,&nbsp;otherwise&nbsp;it&nbsp;returns&nbsp;an&nbsp;empty&nbsp;list.</tt></dd></dl>
 
-<dl><dt><a name="HotelAPIView-get_available_rooms"><strong>get_available_rooms</strong></a>(self, queryset, start_date, end_date, num_of_rooms, min_price, max_price)</dt><dd><tt>Get&nbsp;for&nbsp;getting&nbsp;available&nbsp;rooms&nbsp;for&nbsp;a&nbsp;given&nbsp;hotels.&nbsp;Filters&nbsp;by&nbsp;price&nbsp;and&nbsp;number&nbsp;of&nbsp;rooms&nbsp;as&nbsp;well&nbsp;as&nbsp;start&nbsp;and&nbsp;end&nbsp;date</tt></dd></dl>
+<dl><dt><a name="HotelAPIView-get_available_rooms"><strong>get_available_rooms</strong></a>(self, queryset, start_date, end_date, num_of_rooms, min_price, max_price)</dt><dd><tt>@param&nbsp;queryset:&nbsp;Hotel&nbsp;object<br>
+@param&nbsp;start_date:&nbsp;str<br>
+@param&nbsp;end_date:&nbsp;str<br>
+@param&nbsp;num_of_rooms:&nbsp;str<br>
+@param&nbsp;min_price:&nbsp;str<br>
+@param&nbsp;max_price:&nbsp;str<br>
+@precondition:&nbsp;start_date:&nbsp;str,&nbsp;end_date:&nbsp;str,&nbsp;num_of_rooms:&nbsp;int,&nbsp;min_price:&nbsp;float,&nbsp;max_price:&nbsp;float<br>
+@return:&nbsp;List&nbsp;of&nbsp;hotels&nbsp;with&nbsp;available&nbsp;rooms<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;hotels&nbsp;with&nbsp;available&nbsp;rooms&nbsp;based&nbsp;on&nbsp;the&nbsp;start&nbsp;date,&nbsp;end&nbsp;date,&nbsp;number&nbsp;of&nbsp;rooms,&nbsp;min&nbsp;price&nbsp;and&nbsp;max&nbsp;price.</tt></dd></dl>
 
-<dl><dt><a name="HotelAPIView-get_by_id"><strong>get_by_id</strong></a>(self, id)</dt></dl>
+<dl><dt><a name="HotelAPIView-get_by_id"><strong>get_by_id</strong></a>(self, id)</dt><dd><tt>@param&nbsp;id:&nbsp;int<br>
+@return:&nbsp;Hotel&nbsp;object<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;hotel&nbsp;object&nbsp;based&nbsp;on&nbsp;the&nbsp;id.</tt></dd></dl>
 
-<dl><dt><a name="HotelAPIView-get_permissions"><strong>get_permissions</strong></a>(self)</dt><dd><tt>Instantiates&nbsp;and&nbsp;returns&nbsp;the&nbsp;list&nbsp;of&nbsp;permissions&nbsp;that&nbsp;this&nbsp;view&nbsp;requires.</tt></dd></dl>
+<dl><dt><a name="HotelAPIView-get_permissions"><strong>get_permissions</strong></a>(self)</dt><dd><tt>@return:&nbsp;List&nbsp;of&nbsp;permissions<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;permissions&nbsp;based&nbsp;on&nbsp;the&nbsp;request&nbsp;method.</tt></dd></dl>
 
-<dl><dt><a name="HotelAPIView-get_queryset"><strong>get_queryset</strong></a>(self)</dt><dd><tt>Queries&nbsp;according&nbsp;to&nbsp;the&nbsp;parameter&nbsp;being&nbsp;passsed&nbsp;whether&nbsp;it&nbsp;be&nbsp;the&nbsp;id&nbsp;or&nbsp;a&nbsp;string&nbsp;that&nbsp;is&nbsp;used&nbsp;to&nbsp;query&nbsp;any&nbsp;state&nbsp;or&nbsp;city&nbsp;that&nbsp;mathches&nbsp;the&nbsp;string</tt></dd></dl>
+<dl><dt><a name="HotelAPIView-get_queryset"><strong>get_queryset</strong></a>(self)</dt><dd><tt>@return:&nbsp;List&nbsp;of&nbsp;hotels<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;hotels&nbsp;based&nbsp;on&nbsp;the&nbsp;query&nbsp;params.</tt></dd></dl>
 
-<dl><dt><a name="HotelAPIView-list"><strong>list</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="HotelAPIView-list"><strong>list</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;List&nbsp;of&nbsp;hotels<br>
+@exception:&nbsp;If&nbsp;check_in,&nbsp;check_out&nbsp;and&nbsp;rooms&nbsp;are&nbsp;in&nbsp;query&nbsp;params,&nbsp;return&nbsp;available&nbsp;rooms<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;hotels&nbsp;based&nbsp;on&nbsp;the&nbsp;query&nbsp;params.&nbsp;If&nbsp;check_in,&nbsp;check_out&nbsp;and&nbsp;rooms&nbsp;are&nbsp;in&nbsp;query&nbsp;params,&nbsp;it&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;available<br>
+rooms&nbsp;based&nbsp;on&nbsp;the&nbsp;query&nbsp;params.</tt></dd></dl>
 
-<dl><dt><a name="HotelAPIView-post"><strong>post</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="HotelAPIView-post"><strong>post</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;Response&nbsp;object<br>
+@exception:&nbsp;If&nbsp;user&nbsp;is&nbsp;not&nbsp;authenticated,&nbsp;create&nbsp;a&nbsp;new&nbsp;hotel<br>
+@precondition:&nbsp;name:&nbsp;str,&nbsp;address:&nbsp;str,&nbsp;state:&nbsp;str,&nbsp;city:&nbsp;str,&nbsp;amenities:&nbsp;list,&nbsp;description:&nbsp;str,&nbsp;country:&nbsp;str,&nbsp;image_urls:&nbsp;list<br>
+Description:&nbsp;This&nbsp;method&nbsp;creates&nbsp;a&nbsp;new&nbsp;hotel&nbsp;if&nbsp;the&nbsp;data&nbsp;is&nbsp;valid,&nbsp;otherwise&nbsp;it&nbsp;returns&nbsp;an&nbsp;error&nbsp;message.</tt></dd></dl>
 
 <hr>
 Data and other attributes defined here:<br>
-<dl><dt><strong>queryset</strong> = &lt;QuerySet [&lt;Hotel: Hotel object (313)&gt;, &lt;Hotel: ... (228)&gt;, '...(remaining elements truncated)...']&gt;</dl>
+<dl><dt><strong>queryset</strong> = &lt;QuerySet [&lt;Hotel: Hotel object (316)&gt;, &lt;Hotel: ... (335)&gt;, '...(remaining elements truncated)...']&gt;</dl>
 
-<dl><dt><strong>serializer_class</strong> = &lt;class 'api.serializers.hotel.HotelSerializer'&gt;</dl>
+<dl><dt><strong>serializer_class</strong> = &lt;class 'api.serializers.hotel.HotelSerializer'&gt;<dd><tt>Date:&nbsp;(July&nbsp;25th,&nbsp;2024)<br>
+Author:&nbsp;Porfirio&nbsp;Tavira<br>
+Description:&nbsp;This&nbsp;serializer&nbsp;handles&nbsp;the&nbsp;conversion&nbsp;of&nbsp;Hotel&nbsp;model&nbsp;instances&nbsp;to&nbsp;and&nbsp;from&nbsp;JSON&nbsp;format.&nbsp;<br>
+It&nbsp;is&nbsp;responsible&nbsp;for&nbsp;validating&nbsp;and&nbsp;serializing&nbsp;the&nbsp;data&nbsp;related&nbsp;to&nbsp;Hotel&nbsp;instances,&nbsp;ensuring&nbsp;data&nbsp;integrity.</tt></dl>
 
 <hr>
 Data descriptors inherited from <a href="rest_framework.mixins.html#ListModelMixin">rest_framework.mixins.ListModelMixin</a>:<br>

@@ -11,11 +11,9 @@
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>api.views.room.RoomAPIView(**kwargs)<br>
 &nbsp;<br>
-RoomAPIView<br>
-08/06/2024<br>
-Porfirio&nbsp;Tavira&nbsp;&amp;&nbsp;Karen&nbsp;Shirvanyan<br>
-Room&nbsp;controller&nbsp;that&nbsp;does&nbsp;the&nbsp;GET&nbsp;POST&nbsp;and&nbsp;DELETE&nbsp;for&nbsp;the&nbsp;Room&nbsp;Class<br>
-his&nbsp;class&nbsp;uses&nbsp;the&nbsp;Room&nbsp;model&nbsp;and&nbsp;serializer&nbsp;to&nbsp;be&nbsp;utilized&nbsp;by&nbsp;the&nbsp;frontend<br>&nbsp;</tt></td></tr>
+Date:&nbsp;(August&nbsp;7th,&nbsp;2024)<br>
+Author:&nbsp;Karen&nbsp;Shirvanyan<br>
+Description:&nbsp;This&nbsp;class&nbsp;is&nbsp;a&nbsp;view&nbsp;for&nbsp;the&nbsp;Room&nbsp;model.&nbsp;It&nbsp;allows&nbsp;users&nbsp;to&nbsp;create&nbsp;a&nbsp;new&nbsp;room,&nbsp;list&nbsp;all&nbsp;rooms,&nbsp;and&nbsp;delete&nbsp;a&nbsp;room.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="api.views.room.html#RoomAPIView">RoomAPIView</a></dd>
@@ -29,36 +27,47 @@ his&nbsp;class&nbsp;uses&nbsp;the&nbsp;Room&nbsp;model&nbsp;and&nbsp;serializer&
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="RoomAPIView-delete"><strong>delete</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="RoomAPIView-delete"><strong>delete</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;HttpResponse&nbsp;object<br>
+@exception:&nbsp;If&nbsp;user&nbsp;is&nbsp;authenticated,&nbsp;delete&nbsp;a&nbsp;room<br>
+Description:&nbsp;This&nbsp;method&nbsp;deletes&nbsp;a&nbsp;room&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;authenticated,&nbsp;otherwise&nbsp;it&nbsp;returns&nbsp;an&nbsp;error&nbsp;message.</tt></dd></dl>
 
-<dl><dt><a name="RoomAPIView-get"><strong>get</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="RoomAPIView-get"><strong>get</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;List&nbsp;of&nbsp;rooms<br>
+@exception:&nbsp;If&nbsp;user&nbsp;is&nbsp;authenticated,&nbsp;return&nbsp;list&nbsp;of&nbsp;rooms<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;rooms&nbsp;based&nbsp;on&nbsp;the&nbsp;user's&nbsp;authentication&nbsp;status.</tt></dd></dl>
 
-<dl><dt><a name="RoomAPIView-get_available_rooms"><strong>get_available_rooms</strong></a>(self, start_date, end_date, hotel_id, num_of_rooms)</dt><dd><tt>Gets&nbsp;available&nbsp;rooms&nbsp;using&nbsp;the&nbsp;start&nbsp;date&nbsp;end&nbsp;data&nbsp;hotel&nbsp;id&nbsp;and&nbsp;numbers&nbsp;of&nbsp;rooms&nbsp;to&nbsp;filter&nbsp;the&nbsp;available&nbsp;rooms</tt></dd></dl>
+<dl><dt><a name="RoomAPIView-get_available_rooms"><strong>get_available_rooms</strong></a>(self, start_date, end_date, hotel_id, num_of_rooms)</dt><dd><tt>@param&nbsp;start_date:&nbsp;str<br>
+@param&nbsp;end_date:&nbsp;str<br>
+@param&nbsp;hotel_id:&nbsp;int<br>
+@param&nbsp;num_of_rooms:&nbsp;int<br>
+@return:&nbsp;List&nbsp;of&nbsp;available&nbsp;rooms<br>
+@precondition:&nbsp;start_date:&nbsp;str,&nbsp;end_date:&nbsp;str,&nbsp;hotel_id:&nbsp;int,&nbsp;num_of_rooms:&nbsp;int<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;available&nbsp;rooms&nbsp;based&nbsp;on&nbsp;the&nbsp;start&nbsp;date,&nbsp;end&nbsp;date,&nbsp;hotel&nbsp;id,&nbsp;and&nbsp;number&nbsp;of&nbsp;rooms.</tt></dd></dl>
 
-<dl><dt><a name="RoomAPIView-get_permissions"><strong>get_permissions</strong></a>(self)</dt><dd><tt>Instantiates&nbsp;and&nbsp;returns&nbsp;the&nbsp;list&nbsp;of&nbsp;permissions&nbsp;that&nbsp;this&nbsp;view&nbsp;requires.</tt></dd></dl>
+<dl><dt><a name="RoomAPIView-get_permissions"><strong>get_permissions</strong></a>(self)</dt><dd><tt>@return:&nbsp;List&nbsp;of&nbsp;permissions<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;permissions&nbsp;based&nbsp;on&nbsp;the&nbsp;request&nbsp;method.</tt></dd></dl>
 
-<dl><dt><a name="RoomAPIView-get_queryset"><strong>get_queryset</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;list&nbsp;of&nbsp;items&nbsp;for&nbsp;this&nbsp;view.<br>
-This&nbsp;must&nbsp;be&nbsp;an&nbsp;iterable,&nbsp;and&nbsp;may&nbsp;be&nbsp;a&nbsp;queryset.<br>
-Defaults&nbsp;to&nbsp;using&nbsp;`self.<strong>queryset</strong>`.<br>
-&nbsp;<br>
-This&nbsp;method&nbsp;should&nbsp;always&nbsp;be&nbsp;used&nbsp;rather&nbsp;than&nbsp;accessing&nbsp;`self.<strong>queryset</strong>`<br>
-directly,&nbsp;as&nbsp;`self.<strong>queryset</strong>`&nbsp;gets&nbsp;evaluated&nbsp;only&nbsp;once,&nbsp;and&nbsp;those&nbsp;results<br>
-are&nbsp;cached&nbsp;for&nbsp;all&nbsp;subsequent&nbsp;requests.<br>
-&nbsp;<br>
-You&nbsp;may&nbsp;want&nbsp;to&nbsp;override&nbsp;this&nbsp;if&nbsp;you&nbsp;need&nbsp;to&nbsp;provide&nbsp;different<br>
-querysets&nbsp;depending&nbsp;on&nbsp;the&nbsp;incoming&nbsp;request.<br>
-&nbsp;<br>
-(Eg.&nbsp;return&nbsp;a&nbsp;list&nbsp;of&nbsp;items&nbsp;that&nbsp;is&nbsp;specific&nbsp;to&nbsp;the&nbsp;user)</tt></dd></dl>
+<dl><dt><a name="RoomAPIView-get_queryset"><strong>get_queryset</strong></a>(self)</dt><dd><tt>@return&nbsp;List&nbsp;of&nbsp;rooms<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;rooms&nbsp;based&nbsp;on&nbsp;the&nbsp;query&nbsp;parameters.</tt></dd></dl>
 
-<dl><dt><a name="RoomAPIView-list"><strong>list</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="RoomAPIView-list"><strong>list</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;List&nbsp;of&nbsp;rooms<br>
+@exception:&nbsp;If&nbsp;check_in,&nbsp;check_out,&nbsp;hotel_id&nbsp;and&nbsp;num_of_rooms&nbsp;are&nbsp;in&nbsp;query&nbsp;params,&nbsp;return&nbsp;available&nbsp;rooms<br>
+Description:&nbsp;This&nbsp;method&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;rooms&nbsp;based&nbsp;on&nbsp;the&nbsp;query&nbsp;parameters.</tt></dd></dl>
 
-<dl><dt><a name="RoomAPIView-post"><strong>post</strong></a>(self, request, *args, **kwargs)</dt></dl>
+<dl><dt><a name="RoomAPIView-post"><strong>post</strong></a>(self, request, *args, **kwargs)</dt><dd><tt>@param&nbsp;request:&nbsp;Request&nbsp;object<br>
+@return:&nbsp;HttpResponse&nbsp;object<br>
+@precondition:&nbsp;hotel_id:&nbsp;int,&nbsp;room_type:&nbsp;str,&nbsp;price:&nbsp;float,&nbsp;quantity:&nbsp;int<br>
+Description:&nbsp;This&nbsp;method&nbsp;creates&nbsp;a&nbsp;new&nbsp;room&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;authenticated,&nbsp;otherwise&nbsp;it&nbsp;returns&nbsp;an&nbsp;error&nbsp;message.</tt></dd></dl>
 
 <hr>
 Data and other attributes defined here:<br>
-<dl><dt><strong>queryset</strong> = &lt;QuerySet [&lt;Room: Room object (625)&gt;, &lt;Room: Roo... (644)&gt;, '...(remaining elements truncated)...']&gt;</dl>
+<dl><dt><strong>queryset</strong> = &lt;QuerySet [&lt;Room: Room object (1249)&gt;, &lt;Room: Ro...(1268)&gt;, '...(remaining elements truncated)...']&gt;</dl>
 
-<dl><dt><strong>serializer_class</strong> = &lt;class 'api.serializers.room.RoomSerializer'&gt;</dl>
+<dl><dt><strong>serializer_class</strong> = &lt;class 'api.serializers.room.RoomSerializer'&gt;<dd><tt>Date:&nbsp;(August&nbsp;5th,&nbsp;2024)<br>
+Author:&nbsp;Porfirio&nbsp;Tavira<br>
+Description:&nbsp;This&nbsp;class&nbsp;is&nbsp;a&nbsp;serializer&nbsp;for&nbsp;the&nbsp;Room&nbsp;model.&nbsp;It&nbsp;allows&nbsp;user&nbsp;to&nbsp;serialize&nbsp;and&nbsp;deserialize&nbsp;Room&nbsp;objects.</tt></dl>
 
 <hr>
 Methods inherited from <a href="rest_framework.generics.html#GenericAPIView">rest_framework.generics.GenericAPIView</a>:<br>
