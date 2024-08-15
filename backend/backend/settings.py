@@ -32,6 +32,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# add REST_FRAMEWORK to the list of installed apps
+
+
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -39,6 +43,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+
 }
 
 SIMPLE_JWT = {
@@ -57,6 +62,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "api",
+    "api.views.hotel",
+    "api.views.user",
+    "api.views.checkout",
+    "api.views.reservation",
+    "api.views.room",
     "rest_framework",
     "corsheaders"
 ]

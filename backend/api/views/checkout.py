@@ -8,9 +8,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class StripeCheckout(generics.CreateAPIView):
+    """
+    Date: (August 8th, 2024)
+    AUthor: Porfirio Tavira
+    Description: This class is a view for the Stripe API. It allows users to create a new session for a reservation.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
+        """
+        @param request: Request object
+        @return: JsonResponse object
+        @precondition: hotel_name: str, image_url: str, reservation_price: float, hotel: int, check_in_date: str, check_out_date: str, num_of_rooms: int
+        Description: This method creates a new session for a reservation based on the hotel name, image url, reservation price, hotel id, check in date, check out date, and number of rooms.
+        """
         data = request.data
         stripe.api_key = os.getenv('STRIPE_API_KEY')
 

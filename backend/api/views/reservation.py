@@ -11,20 +11,36 @@ class ReservationAPIView(mixins.ListModelMixin,
                          mixins.DestroyModelMixin,
                          generics.GenericAPIView):
     """
+<<<<<<< HEAD
+    Date: (August 8th, 2024)
+    Author: Karen Shirvanyan
+    Description: This class is a view for the Reservation model. It allows users to create a new reservation, list all reservations, update a reservation, and delete a reservation.
+=======
     ReservationAPIView
     08/08/2024
     Karen Shirvanyan
     Class that hangles the GET PUT And DELETE of the Reservation Class. Utilizes Reservation Model 
+>>>>>>> 43057ecf72dbd5d6cd05e36d846729be9f039c51
     """
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
     def get_permissions(self):
+        """
+        @return: List of permissions
+        Description: This method returns a list of permissions based on the request method.
+        """
         if self.request.method in ['GET','PUT', 'DELETE']:
             return [IsAuthenticated()]
         return [AllowAny()]
 
     def get_queryset(self):
+        """
+        @return: List of reservations
+        @precondition: hotel_id: int, check_in_date: str, check_out_date: str
+        @exception: If user is authenticated, return list of their reservations else return list of all reservations
+        Description: This method returns a list of reservations based on the user's authentication status.
+        """
         user = self.request.user
         query_set = Reservation.objects.all()
         hotel_id = self.request.query_params.get('hotel_id')
@@ -41,7 +57,14 @@ class ReservationAPIView(mixins.ListModelMixin,
             query_set = query_set.filter(check_in_date__gte=check_in_date, check_out_date__lte=check_out_date) if check_in_date and check_out_date else query_set
         return query_set
     
-    def check_availability(self, request_data): 
+    def check_availability(self, request_data):
+        """
+        @param request_data: dict
+        @return: int
+        @precondition: hotel: int, room: int, check_in_date: str, check_out_date: str, num_of_rooms: int, email: str
+        @exception: If there are not enough rooms available, return an error message
+        Description: This method checks if there are enough rooms available based on the hotel, room, check in date, check out date, and number of rooms.
+        """
         reservations = Reservation.objects.filter(
             hotel=request_data['hotel'],
             room=request_data['room'],
@@ -71,18 +94,46 @@ class ReservationAPIView(mixins.ListModelMixin,
             return JsonResponse({'message': 'Reservation created successfully', 'reservation': ReservationSerializer(reservation).data}, status=201)
 
     def get(self, request, *args, **kwargs):
+        """
+        @param request: Request object
+        @return: List of reservations
+        """
         return self.list(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
+        """
+        @param request: Request object
+        @precondition: id: int
+        @exception: If user is authenticated, update reservation
+        @return: HttpResponse object
+        """
         return self.update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        """
+        @param request: Request object
+        @precondition: id: int
+        @return: HttpResponse object
+        @exception: If user is authenticated, delete reservation
+        """
         return self.destroy(request, *args, **kwargs)
 
     def perform_create(self, serializer):
+        """
+        @param serializer: ReservationSerializer object
+        @return: None
+        @exception: If user is authenticated, save reservation to user
+        Description: This method saves the reservation to the user if they are authenticated.
+        """
         user = self.request.user
         serializer.save(guest=user)
 
     def perform_update(self, serializer):
+        """
+        @param serializer: ReservationSerializer object
+        @return: None
+        @exception: If user is authenticated, save updated reservation to user
+        Description: This method saves the updated reservation to the user if they are authenticated.
+        """
         user = self.request.user
         serializer.save(guest=user)
