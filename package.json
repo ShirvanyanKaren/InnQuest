@@ -4,29 +4,29 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-      "start": "concurrently \"cd frontend && npm run build\" \"cd server && gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app\"",
-      "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && python manage.py runserver\"",
-      "install": "concurrently \"cd frontend && npm install\" \"cd backend && pip install -r requirements.txt\"",
-      "build": "cd frontend && npm run build",
-      "heroku-postbuild": "npm run build"
+        "start": "concurrently \"cd frontend && npm run build\" \"cd server && gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app\"",
+        "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && python manage.py runserver\"",
+        "install": "concurrently \"cd frontend && npm install\" \"cd backend && pip install -r requirements.txt\"",
+        "build": "cd frontend && npm run build",
+        "heroku-postbuild": "npm run build"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "devDependencies": {
-      "concurrently": "^8.2.0"
+        "concurrently": "^8.2.0"
     },
     "dependencies": {
-      "@fortawesome/react-fontawesome": "^0.2.0",
-      "animate.css": "^4.1.1",
-      "axios": "^1.5.0",
-      "bootstrap": "^5.3.1",
-      "concurrently": "^6.0.0",
-      "dotenv": "^16.3.1",
-      "react-bootstrap": "^2.8.0",
-      "react-toastify": "^10.0.5",
-      "sequelize": "^6.33.0",
-      "words-to-numbers": "^1.5.1"
+        "@fortawesome/react-fontawesome": "^0.2.0",
+        "animate.css": "^4.1.1",
+        "axios": "^1.5.0",
+        "bootstrap": "^5.3.1",
+        "concurrently": "^6.0.0",
+        "dotenv": "^16.3.1",
+        "react-bootstrap": "^2.8.0",
+        "react-toastify": "^10.0.5",
+        "sequelize": "^6.33.0",
+        "vite": "^5.4.0",
+        "words-to-numbers": "^1.5.1"
     }
-  }
-  
+}

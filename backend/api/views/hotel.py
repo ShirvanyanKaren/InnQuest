@@ -4,12 +4,17 @@ from api.serializers.hotel import HotelSerializer
 from api.serializers.room import RoomSerializer
 from rest_framework.response import Response
 from api.models import Hotel, Reservation, Room
-
-
 class HotelAPIView(mixins.ListModelMixin,
                      mixins.CreateModelMixin,
                      mixins.DestroyModelMixin,
                      generics.GenericAPIView):
+     """
+     HotelAPIView
+     07/25/2024
+     Porfirio Tavira
+     Hotel controller that does the GET POST and DELETE for the Hotel Class
+     This class uses the Hotel model and serializer to be utilized by the frontend
+     """
      queryset = Hotel.objects.all()
      serializer_class = HotelSerializer
      """
