@@ -29,13 +29,14 @@ const Rooms = () => {
 
   useEffect(() => {
     const hotelId = window.location.pathname.split("/")[2];
-    const params = { hotel_id: hotelId };
+    const params = new URLSearchParams(location.search);
+    params.set("hotel_id", hotelId);
     setHotelId(hotelId);
     getHotelRooms(params).then((response) => {
       setRooms(response?.data);
       setLoading(false);
     });
-  }, []);
+  }, [params]);
 
   
   const handleFilter = (e) => {
@@ -60,6 +61,7 @@ const Rooms = () => {
   };
 
   const handleChange = (e) => {
+    setError("");
     if (e.target.id === "rooms" || e.target.id === "check_out" || e.target.id === "check_in") {
       let rooms = Number(params.get("rooms"));
       let checkIn = params.get("check_in");
@@ -67,14 +69,14 @@ const Rooms = () => {
       if (e.target.id === "rooms") rooms = e.target.value;
       else if (e.target.id === "check_in") checkIn = e.target.value;
       else if (e.target.id === "check_out") checkOut = e.target.value;
+      if (rooms > selectedRoom.available_rooms) setError("Not enough rooms available");
       let numOfNights = Number(dayjs(checkOut).diff(dayjs(checkIn), "day"));
       let price = selectedRoom.price * 1.1 * rooms * numOfNights
       setReservationPrice(price.toString() !== "NaN" ? price.toFixed(2) : 0);
-    } 
+    }
     const newParams = new URLSearchParams(params);
     newParams.set(e.target.id, e.target.value);
     setSearchParams(newParams);
-
   }
 
   const getCheckoutSession = async (room) => {
@@ -130,17 +132,42 @@ const Rooms = () => {
             <ToolTip amenity={"Guests"} description={`Sleeps ${room.sleeps}`} />
             <ToolTip amenity={"Footage"} description={`${room.footage} sq ft`} />
             </div>
-            <div className="d-flex justify-content-between">
-            <h3 className="card-text">${room.price}</h3>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                handleShow(room);
-              }}
-            >
-              Reserve
-            </button>
-            </div>
+            <div className="d-flex justify-content-between align-items-center">
+  <div className="price-container">
+    {room.available_rooms === 0 ? (
+      <>
+      <br/>
+      <p className="text-danger mb-1 mt-1 fs-4">Sold Out</p>
+      </>
+    ) : (
+      <>
+        {room.available_rooms < 5 ? (
+          <>
+          <p className="text-danger mb-0 fs-6">Only {room.available_rooms} rooms left at</p>
+          <h3 className="card-text"> ${room.price}</h3>
+          </>
+        ) : (
+          <>
+          <p className="text-danger mb-0 fs-6">Starting at</p>
+          <h3 className="card-text"> <span className="text-decoration-line-through text-muted fs-5">${(room.price * 1.3).toFixed(2)}</span> ${room.price}</h3>
+         </>
+         )}
+      </>
+    )}
+  </div>
+  {room.available_rooms > 0 && (
+    <div className="align-self-end mb-1">
+    <button
+      className="btn btn-primary reserve-btn"
+      onClick={() => {
+        handleShow(room);
+      }}
+    >
+      Reserve
+    </button>
+    </div>
+  )}
+</div>
           </div>
         </div>
         <Modal show={show} onHide={handleClose}>
@@ -220,10 +247,13 @@ const Rooms = () => {
             </button>
             <button
               className="btn btn-primary"
+              disabled={selectedRoom?.available_rooms === 0 || Number(params.get("rooms")) > selectedRoom?.available_rooms}
               onClick={() => getCheckoutSession()}
             >
               Book
             </button>
+            <p>
+            </p>
           </Modal.Footer>
         </Modal>
       </div>

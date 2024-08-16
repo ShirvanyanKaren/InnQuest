@@ -80,8 +80,8 @@ const Hotels = () => {
   const submitPriceChange = (e) => {
     e.preventDefault();
     if (Number(filter.max_price) < 299) setFilter({ ...filter, min_price: 100, max_price: 299 });
-    if (Number(filter.min_price) > Number(filter.max_price)) setFilter({ ...filter, min_price: Number(filter.min_price), max_price: Number(filter.min_price) * 1.8 });
-    if (Number(filter.min_price) > 837) setFilter({ ...filter, min_price: 400, max_price: 1000 });
+    if (Number(filter.min_price) > 350) setFilter({ ...filter, min_price: 350, max_price: 1000 });
+    // if (Number(filter.min_price) > Number(filter.max_price)) setFilter({ ...filter, min_price: Number(filter.min_price), max_price: Number(filter.min_price) * 1.8 });
     setSearchParams({
       query: params.get("query"),
       check_in: params.get("check_in"),
@@ -216,14 +216,25 @@ const Hotels = () => {
                         </div>
                         {hotel?.rooms?.length > 0 && (
                           <>
-                        <p className="card-text mt-2">
+                        <p className="card-text mt-2 fs-5">
                           <strong>
-                            Rooms at ${hotel?.rooms[0]?.price} per night
+                            <span className="text-decoration-line-through text-muted ms-1 me-1 fs-6"
+                            >
+                              ${(hotel?.rooms[0]?.price * 1.3).toFixed(2)}
+                              </span> 
+                            ${hotel?.rooms[0]?.price} per night
                           </strong>
                         </p>
                         <p className="card-text">
-                          <strong>Rooms Left:</strong>{" "}
-                          {hotel.rooms[0].available_rooms}
+                         {hotel?.rooms[0].available_rooms < 5 ? (
+                            <span className="text-danger">
+                              Only {hotel?.rooms[0].available_rooms} rooms left!
+                            </span>
+                          ) : (
+                            <span className="text-success">
+                              {hotel?.rooms[0].available_rooms} rooms available
+                            </span>
+                          )}
                         </p>
                         </>
                         )}

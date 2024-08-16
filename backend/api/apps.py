@@ -14,14 +14,14 @@ class ApiConfig(AppConfig):
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
         
         # Generate documentation for a specific module or class
-        pydoc.writedoc('api.views.hotel.HotelAPIView')
-        pydoc.writedoc('api.models')
-        pydoc.writedoc('api.views.room.RoomAPIView')
-        pydoc.writedoc('api.views.user.UserView')
-        pydoc.writedoc('api.management.commands.seed.Command')
-        pydoc.writedoc('api.serializers.reservation')
-        pydoc.writedoc('api.serializers.room')
-        pydoc.writedoc('api.serializers.user')
-        pydoc.writedoc('api.serializers.hotel')
+        # pydoc.writedoc('api.views.hotel.HotelAPIView')
+        # pydoc.writedoc('api.models')
+        # pydoc.writedoc('api.views.room.RoomAPIView')
+        # pydoc.writedoc('api.views.user.UserView')
+        # pydoc.writedoc('api.management.commands.seed.Command')
+        # pydoc.writedoc('api.serializers.reservation')
+        # pydoc.writedoc('api.serializers.room')
+        # pydoc.writedoc('api.serializers.user')
+        # pydoc.writedoc('api.serializers.hotel')
 
 
