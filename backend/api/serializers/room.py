@@ -5,15 +5,8 @@ class RoomSerializer(serializers.ModelSerializer):
     """
     Date: (August 5th, 2024)
     Author: Porfirio Tavira
-<<<<<<< HEAD
-    Description: This serializer is responsible for converting Room model instances to and from JSON format. 
-    It ensures that the data associated with Room instances is validated and properly serialized.
-    """
-    
-=======
     Description: This class is a serializer for the Room model. It allows user to serialize and deserialize Room objects.
     """
->>>>>>> 685cbc40af97187fa43e6c6cb4ff4c01ed3107ba
     class Meta:
         """
         Description: Meta class that defines the model and fields to be included in the serialization process.
