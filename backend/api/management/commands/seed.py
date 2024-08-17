@@ -5,6 +5,7 @@ from faker import Faker
 import random
 import json
 import pathlib
+import datetime as dt
 from datetime import timedelta
 
 class Command(BaseCommand):
@@ -33,7 +34,7 @@ class Command(BaseCommand):
     
 
     def _seed_users(self):
-        for _ in range(60):
+        for _ in range(120):
             username = self.faker.email()
             email = username
             user = User.objects.create_user(
@@ -110,8 +111,10 @@ class Command(BaseCommand):
     def _seed_reservations(self):
         users = User.objects.all()
         rooms = Room.objects.all()
-        for _ in range(700):
-            check_in_date = self.faker.date_between(start_date='today', end_date='+30d')
+        for _ in range(7500):
+            beginning_of_year = dt.datetime.now().replace(month=1, day=1)
+            today = dt.datetime.now()
+            check_in_date = self.faker.date_between_dates(date_start=beginning_of_year, date_end=today + timedelta(days=30))
             check_out_date = check_in_date + timedelta(days=random.randint(1, 10))
             num_of_rooms = random.randint(1, 3)
             room = random.choice(rooms)
