@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getHotelsByCity } from "../services/hotel";
 import { getUserLocation } from "../utils/helpers";
 import Search from "../components/Search";
+import Auth from "../utils/auth";
 import ImagesSlider from "../components/ImageSlider";
 
 const Home = () => {

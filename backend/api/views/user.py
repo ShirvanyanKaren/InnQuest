@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from api.models import Reservation
 from rest_framework import generics, mixins
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from api.serializers.user import UserSerializer
 from django.http import JsonResponse, HttpResponse
+
+
 
 class UserView(mixins.ListModelMixin,
                 mixins.CreateModelMixin,
