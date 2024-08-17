@@ -7,9 +7,11 @@ import googleLogo from '../assets/google-icon-logo.svg'
 import xLogo from '../assets/X_icon.svg'
 import xWhiteLogo from '../assets/x-white-icon.png'
 
-const Login = () => { 
+const Login = () => {
+  const [adminPage, setAdminPage] = useState(false);
   useEffect(() => {
     const location = window.location.pathname.split('/')[1];
+    if (location === 'admin') setAdminPage(true);
     if (location === 'login') {
       setJustifyActive('login');
     } else if (location === 'signup') {
@@ -62,9 +64,7 @@ const Login = () => {
           }
         } else {
             try {
-                console.log(formState);
                 const response = await register(formState);
-                console.log(response);
                 if (response.status === 200) {
                     Auth.login(response.data.access);
                 } else {
@@ -94,12 +94,12 @@ const Login = () => {
                   id="pills-login-tab"
                   onClick={() => handleJustifyClick("login")}
                 >
-                  Login
+                  {adminPage ? "Admin Login" : "Login"}
                 </button>
               </li>
               <li className="nav-item" role="presentation">
                 <button
-                  className={`nav-link ${justifyActive === "signup" ? "active" : ""}`}
+                  className={`nav-link ${justifyActive === "signup" ? "active" : ""} ${adminPage ? "d-none" : ""}`}
                   id="pills-register-tab"
                   onClick={() => handleJustifyClick("signup")}
                 >
@@ -118,7 +118,7 @@ const Login = () => {
                       Email
                     </label>
                     <input
-                      type="email"
+                      type={`${adminPage ? "text" : "email"}`}
                       className="form-control"
                       id="email"
                       name="email"
@@ -182,7 +182,7 @@ const Login = () => {
                   </button>
                 </form>
                 <button type="submit" 
-                className="btn btn-light w-100 mt-3"
+                className={`btn btn-dark w-100 mt-3 ${adminPage ? "d-none" : ""}`}
                 >
                 <span className=''>
                    <img 
@@ -192,7 +192,7 @@ const Login = () => {
     
                 </button>
                 <button type="submit"
-                className="btn btn-dark w-100 mt-3"
+                className={`btn btn-dark w-100 mt-3 ${adminPage ? "d-none" : ""}`}
                 >
                     { justifyActive === "login" ? "Login with" : "Register with" }
                     <span className=''>

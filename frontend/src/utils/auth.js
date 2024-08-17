@@ -58,6 +58,18 @@ class AuthService {
     return localStorage.getItem("access_token");
   }
 
+  isSuperUser() {
+    /**
+     * @return: Boolean indicating if the user is a superuser
+     * Description: This method checks if the current user is a superuser by examining the decoded JWT token.
+     * It returns true if the user is a superuser, otherwise it returns false.
+     */
+
+    const token = this.getToken();
+    const decoded = jwtDecode(token);
+    return decoded.is_superuser;
+  }
+
   async login(idToken) {
     /**
      * @param idToken: JWT token string
@@ -67,7 +79,10 @@ class AuthService {
 
     localStorage.removeItem("access_token");
     localStorage.setItem("access_token", idToken);
-    window.location.assign("/");
+    const decoded = jwtDecode(idToken);
+    if (decoded.is_superuser) window.location.href = "/admin";
+    else window.location.href = "/";
+    
   }
 
   async logout() {

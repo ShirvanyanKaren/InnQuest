@@ -4,6 +4,7 @@ from api.serializers.hotel import HotelSerializer
 from api.serializers.room import RoomSerializer
 from rest_framework.response import Response
 from api.models import Hotel, Reservation, Room
+from django.contrib.auth.models import User
 class HotelAPIView(mixins.ListModelMixin,
                      mixins.CreateModelMixin,
                      mixins.DestroyModelMixin,
@@ -144,7 +145,11 @@ class HotelAPIView(mixins.ListModelMixin,
           @exception: If user is not authenticated, delete a hotel
           Description: This method deletes a hotel if the user is authenticated, otherwise it returns an error message.
           """
-          return self.destroy(request, *args, **kwargs)
+          # check if user is superuser
+          if request.user.is_superuser:
+               self.destroy(request, *args, **kwargs)
+               return Response({'message': 'Hotel deleted successfully'})
+          return Response({'message': 'You are not authorized to delete this hotel'}, status=403)
      
 
      

@@ -9,6 +9,7 @@ import Rooms from "./pages/Rooms";
 import Success from "./pages/Success";
 import Login from "./pages/Login"; 
 import Reservations from "./pages/Reservations";
+import AdminDash from "./pages/AdminDash";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,15 @@ const router = createBrowserRouter([
       {
         path: '/reservations',
         element: <Reservations />
+      },
+      {
+        path:'/admin/login',
+        element: <Login />
+      },
+      {
+        path: '/admin',
+        element: <AdminDash />
+
       }
     ]
   }

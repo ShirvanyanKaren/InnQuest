@@ -44,5 +44,4 @@ export const register = async (signupState) => {
     }
 }
 
-// command to create jsdoc documentation for all files under services directory
-// jsdoc -r frontend/src/services -d frontend/docs/services
+
