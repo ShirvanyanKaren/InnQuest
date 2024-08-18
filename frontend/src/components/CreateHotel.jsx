@@ -43,7 +43,6 @@ const CreateHotel = ({ show, handleClose }) => {
             setSuccess(true);
             handleClose();
         }
-        console.log(response);
     };
 
     const handleAmenityClick = (amenity) => {
@@ -52,7 +51,6 @@ const CreateHotel = ({ show, handleClose }) => {
         } else {
             setAmenities([...amenities, amenity]);
         }
-        console.log(amenities);
     }
 
     const amenitiesGrid = Object.keys(amenitiesMap).map((amenity) => {
@@ -68,10 +66,7 @@ const CreateHotel = ({ show, handleClose }) => {
         );
     }
     );
-
-
-
-
+    
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
