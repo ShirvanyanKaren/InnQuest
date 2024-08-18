@@ -11,16 +11,9 @@ class ReservationAPIView(mixins.ListModelMixin,
                          mixins.DestroyModelMixin,
                          generics.GenericAPIView):
     """
-<<<<<<< HEAD
     Date: (August 8th, 2024)
     Author: Karen Shirvanyan
     Description: This class is a view for the Reservation model. It allows users to create a new reservation, list all reservations, update a reservation, and delete a reservation.
-=======
-    ReservationAPIView
-    08/08/2024
-    Karen Shirvanyan
-    Class that hangles the GET PUT And DELETE of the Reservation Class. Utilizes Reservation Model 
->>>>>>> 43057ecf72dbd5d6cd05e36d846729be9f039c51
     """
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer

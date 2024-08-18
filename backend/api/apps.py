@@ -3,7 +3,7 @@ import pydoc
 import os
 
 class ApiConfig(AppConfig):
-    name = 'api'
+    name = "api"
 
     def ready(self):
         """
@@ -19,6 +19,10 @@ class ApiConfig(AppConfig):
         pydoc.writedoc('api.views.room.RoomAPIView')
         pydoc.writedoc('api.views.user.UserView')
         pydoc.writedoc('api.management.commands.seed.Command')
+<<<<<<< Updated upstream
+=======
+        pydoc.writedoc('api.views.reservation.ReservationView')
+>>>>>>> Stashed changes
         pydoc.writedoc('api.serializers.reservation')
         pydoc.writedoc('api.serializers.room')
         pydoc.writedoc('api.serializers.user')
