@@ -124,3 +124,19 @@ export const getReservationsByMonth = async (start, end) => {
         return error;
     }
 }
+
+export const getReservationRevenueByMonth = async (start, end) => {
+    try {
+        const response = await api.get('/api/reservation/', {
+            params: {
+                revenue_start: start,
+                end: end
+            }
+        }
+        );
+        return response;
+    }
+    catch (error) {
+        return error;
+    }
+}

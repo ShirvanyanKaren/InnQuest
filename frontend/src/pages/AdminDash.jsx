@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Bar, Line, Pie } from 'react-chartjs-2';
-import { getReservationsByMonth } from '../services/reservation';
+import { getReservationsByMonth, getReservationRevenueByMonth } from '../services/reservation';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement, ArcElement } from 'chart.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import CreateHotel from '../components/CreateHotel';
 import Auth from '../utils/auth';
 
 
@@ -22,7 +22,8 @@ ChartJS.register(
 const AdminDash = () => {
   if (!Auth.isSuperUser()) window.location.replace('/');
   const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
+  const thisMonth = new Date().getMonth();
+  const [showHotelCreate, setShowHotelCreate] = useState(false);
   const [chartData, setChartData] = useState({
     labels: labels,
     datasets: [
@@ -35,58 +36,61 @@ const AdminDash = () => {
         },
     ],
     });
-  const [lineChartData, setLineChartData] = useState({});
-  const thisMonth = new Date().getMonth();
-
-
+  const [lineChartData, setLineChartData] = useState({
+    labels: labels,
+    datasets: [
+        {
+        label: 'Revenue by Month',
+        data: [80,90,100,110,120,130,140,150,160,170,180,190],
+        fill: false,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        tension: 0.1,
+        },
+    ],
+    });
     useEffect(() => {
         const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0];
         const today = new Date().toISOString().split('T')[0];
         getReservationsByMonth(startOfYear, today).then((res) => {
+            const reservations =[]
+            const revenue = []
             const data = res.data;
-            const dataArr = Object.values(data);
             const labels = Object.keys(data);
+            for (const month in data) {
+                revenue.push(data[month]['revenue']);
+                reservations.push(data[month]['reservations']);
+            }
             setChartData({
                 labels: labels,
                 datasets: [
                     {
                         label: 'Monthly Bookings',
-                        data: dataArr,
+                        data: reservations,
                         backgroundColor: 'rgba(75, 192, 192, 1)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1,
                     },
                 ],
             });
-
-        })
+            console.log(thisMonth)
+            setLineChartData({
+                labels: labels.slice(0, thisMonth + 1),
+                datasets: [
+                    {
+                        label: 'Revenue by Month',
+                        data: revenue,
+                        fill: false,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1,
+                    },
+                ],
+            });
+        });
     }, []);
 
-    const dummyData = {
-        labels: labels.slice(0, thisMonth),
-        datasets: [
-            {
-            label: 'Revenue',
-            data: [65, 59, 80, 81, 56, 55, 40, 60, 70, 80],
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-            },
-        ],
-        };
+    console.log(chartData);
+    console.log(lineChartData, 'line chart data');
 
-    const dummyLineData = {
-        labels: labels.slice(0, thisMonth),
-        datasets: [
-            {
-            label: 'Revenue',
-            data: [65, 59, 80, 81, 56, 55, 40, 60, 70, 80],
-            fill: false,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            tension: 0.1,
-            },
-        ],
-        };
         const data = {
             labels: ["Customer", "Business"],
             datasets: [
@@ -107,7 +111,9 @@ const AdminDash = () => {
       <div className="sidebar bg-light p-3" style={{ width: '250px' }}>
         <h3>Dashboard</h3>
         <ul className="list-unstyled">
-        <li><a href="#" className="text-dark text-decoration-none fs-5">Create Hotels</a></li>
+        <li><a 
+        onClick={() => setShowHotelCreate(true)}
+        className="text-dark text-decoration-none fs-5">Create Hotels</a></li>
           <li><a href="#" className="text-dark text-decoration-none fs-5">Create Rooms</a></li>
           <li><a href="#" className="text-dark text-decoration-none fs-5">Reservations</a></li>
           <li><a href="#" className="text-dark text-decoration-none fs-5">Hotels</a></li>
@@ -128,7 +134,7 @@ const AdminDash = () => {
             <div className="card mb-4">
               <div className="card-body">
                 <h5 className="card-title">Revenue Over Time</h5>
-                <Line data={dummyLineData} />
+                <Line data={lineChartData} />
               </div>
             </div>
           </div>
@@ -141,6 +147,7 @@ const AdminDash = () => {
             </div>
         </div>
         </div>
+        <CreateHotel show={showHotelCreate} setShow={setShowHotelCreate} handleClose={() => setShowHotelCreate(false)} />  
       </div>
     </div>
   );

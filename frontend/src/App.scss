@@ -219,3 +219,9 @@ label {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
 }
+
+.amenities-checkbox {
+  .selected {
+    width: 100%;
+  }
+}
