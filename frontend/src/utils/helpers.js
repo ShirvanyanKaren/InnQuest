@@ -74,13 +74,52 @@ export const idbPromise = (storeName, method, object) => {
 };
 
 
+// utils/imageHelpers.js
+
+export const handleAddImageHelper = (e, object, setObject, setError) => {
+  const files = Array.from(e.target.files);
+  setError("");
 
 
+  for (const file of files) {
+    const reader = new FileReader();
 
+    if (file.size > 12000000) {
+      setError("Image must be less than 12MB.");
+      return;
+    }
 
+    if (!file.type.startsWith("image")) {
+      setError("File must be an image.");
+      return;
+    }
 
+    reader.onload = (e) => {
+      const fileData = {};
+      const data = e.target.result;
+      const name = file.name;
+      const blob = new Blob([data], { type: file.type });
+      const url = URL.createObjectURL(blob);
 
+      fileData['name'] = name;
+      fileData['data'] = data;
+      fileData['type'] = file.type;
+      fileData['url'] = url;
 
+      
+      setObject({ ...object, image_urls: [...object.image_urls, fileData] });
+
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+};
+
+export const handleDeleteImageHelper = (index, object, setObject) => {
+  console.log(object);
+  const newImages = object.image_urls.filter((image, i) => i !== index);
+  setObject({ ...object, image_urls: newImages });
+}
 
 
 export const stateAbbreviations = {

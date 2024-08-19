@@ -7,6 +7,8 @@ import smtplib, ssl, os, datetime as dt
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+from django.db.models import Count
+from rest_framework.response import Response
 from dotenv import load_dotenv
 
 
@@ -121,9 +123,42 @@ class ReservationAPIView(mixins.ListModelMixin,
         @return: List of permissions
         Description: This method returns a list of permissions based on the request method.
         """
-        if self.request.method in ['GET','PUT', 'DELETE']:
+        if self.request.method in ['GET','PUT', 'DELETE','POST']:
             return [IsAuthenticated()]
         return [AllowAny()]
+    
+    def list(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            if 'start' and 'end' in request.query_params:
+                reservations_by_month = self.bookings_by_months(request)
+                return Response(reservations_by_month)
+            if 'revenue_start' in request.query_params:
+                revenue_by_month = self.booking_revenue_by_month(request)
+                return Response(revenue_by_month)
+        return self.list(request, *args, **kwargs)
+    
+    
+    def bookings_by_months(self, request):
+        """
+        @param request: Request object
+        @return: List of reservations
+        @precondition: User is superuser
+        Description: This method returns the number of reservations made by month.
+        """
+        query_set = Reservation.objects.all()
+        start = self.request.query_params.get('start')
+        end = self.request.query_params.get('end')
+        reservations = query_set.filter(check_in_date__gte=start)
+        months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        reservations_by_month = {}
+        for reservation in reservations:
+            month = reservation.check_in_date.month
+            month_name = months[int(month) - 1]
+            reservations_by_month[month_name] = reservations_by_month.get(month_name, {})
+            reservations_by_month[month_name]['reservations'] = reservations_by_month.get(month_name, {}).get('reservations', 0) + 1
+            reservations_by_month[month_name]['revenue'] = reservations_by_month.get(month_name, {}).get('revenue', 0) + reservation.reservation_price
+        reservations_by_month = dict(sorted(reservations_by_month.items(), key=lambda x: months.index(x[0])))
+        return reservations_by_month
     
     def get_queryset(self):
         """

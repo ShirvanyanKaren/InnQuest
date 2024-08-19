@@ -66,3 +66,42 @@ export const getHotelRooms = async (params) => {
         return error;
     }
 }
+
+/**
+ * Creates a new hotel by posting the hotel information to the API.
+ * 
+ * @async
+ * @function createHotel
+ * @param {Object} hotelInfo - The hotel information to create.
+ * @returns A promise that resolves to the response from the API or an error.
+ */
+export const createHotel = async (hotelInfo) => {
+    try {
+        console.log(hotelInfo);
+        const response = await api.post("/api/hotel/", hotelInfo);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const editHotel = async (hotelInfo) => {
+    try {
+        console.log(hotelInfo);
+        const response = await api.put(`/api/hotel/${hotelInfo.id}/`, hotelInfo);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const deleteHotel = async (hotelId) => {
+    try {
+        const response = await api.delete(`/api/hotel/${hotelId}/`);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+

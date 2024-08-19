@@ -7,7 +7,9 @@ from .views.user import UserView
 
 urlpatterns = [
     path("hotel/", HotelAPIView.as_view(), name="hotel-list"),
+    path("hotel/<int:pk>/", HotelAPIView.as_view(), name="hotel-detail"),
     path("room/", RoomAPIView.as_view(), name="room-list"),
+    path("room/<int:pk>/", RoomAPIView.as_view(), name="room-detail"),
     path("reservation/", ReservationAPIView.as_view(), name="reservation-list"),
     path("reservation/<int:pk>/", ReservationAPIView.as_view(), name="reservation-detail"),
     path("checkout/", StripeCheckout.as_view(), name="stripe-checkout"),

@@ -98,3 +98,45 @@ export const deleteReservation = async (id) => {
         return error;
     }
 }
+
+/**
+ * Retrieves all reservations for a given month.
+ * 
+ * @async
+ * @function getReservationsByMonth
+ * @param {number} months - The number of months to retrieve reservations for.
+ * @returns A promise that resolves to the response from the API or an error.
+ */
+
+
+export const getReservationsByMonth = async (start, end) => {
+    try {
+        const response = await api.get('/api/reservation/', {
+            params: {
+                start: start,
+                end: end
+            }
+        }
+        );
+        return response;
+    }
+    catch (error) {
+        return error;
+    }
+}
+
+export const getReservationRevenueByMonth = async (start, end) => {
+    try {
+        const response = await api.get('/api/reservation/', {
+            params: {
+                revenue_start: start,
+                end: end
+            }
+        }
+        );
+        return response;
+    }
+    catch (error) {
+        return error;
+    }
+}

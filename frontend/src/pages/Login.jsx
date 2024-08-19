@@ -182,7 +182,7 @@ const Login = () => {
                   </button>
                 </form>
                 <button type="submit" 
-                className={`btn btn-dark w-100 mt-3 ${adminPage ? "d-none" : ""}`}
+                className={`btn btn-light w-100 mt-3 ${adminPage ? "d-none" : ""}`}
                 >
                 <span className=''>
                    <img 

@@ -43,7 +43,7 @@ class HotelAPIView(mixins.ListModelMixin,
           """
           return Hotel.objects.filter(id=id)
      
-     def get_available_rooms(self, queryset, query_params):
+     def get_available_rooms(self, query_params):
           """
           @param queryset: Hotel object
           @param start_date: str
@@ -56,11 +56,12 @@ class HotelAPIView(mixins.ListModelMixin,
           Description: This method returns a list of hotels with available rooms based on the start date, end date, number of rooms, min price and max price.
           """
           hotels = []
+          queryset = self.get_queryset()
           for hotel in queryset:
                 reservations = Reservation.objects.filter(
                     hotel=hotel.id,
-                    check_in_date__lte=query_params.check_in,
-                    check_out_date__gte=query_params.check_out
+                    check_in_date__lte=query_params['check_in'],
+                    check_out_date__gte=query_params['check_out']
                 )
                 reserved_rooms = {}
                 for reservation in reservations:
@@ -87,12 +88,10 @@ class HotelAPIView(mixins.ListModelMixin,
           Description: This method returns a list of hotels based on the query params. If check_in, check_out and rooms are in query params, it returns a list of available
           rooms based on the query params.
           """
-          queryset = self.get_queryset()
           if 'check_in' in request.query_params and 'check_out' in request.query_params and 'rooms' in request.query_params:
-                available_rooms = self.get_available_rooms(queryset=queryset, query_params= request.query_params)
+                available_rooms = self.get_available_rooms(query_params=request.query_params)
                 return Response(available_rooms)
-          serializer = self.get_serializer(queryset, many=True)
-          return Response(serializer.data)
+          return super().list(request, *args, **kwargs)
 
      
      def get_queryset(self):
@@ -101,16 +100,19 @@ class HotelAPIView(mixins.ListModelMixin,
           Description: This method returns a list of hotels based on the query params.
           """
           params = self.request.query_params
+          
           if params.get('hotel_id'):
-                return self.get_by_id(params.get('hotel_id'))
+               queryset = self.get_by_id(params.get('hotel_id'))
           elif params.get('query'):
-                query_set = Hotel.objects.filter(city__icontains=params.get('query')) | Hotel.objects.filter(state__icontains=params.get('query'))
-                if params.get('amenities'):
+               queryset = Hotel.objects.filter(city__icontains=params.get('query')) | Hotel.objects.filter(state__icontains=params.get('query'))
+               
+               if params.get('amenities'):
                     amenities = params.get('amenities').split(',')
-                    query_set = query_set.filter(amenities__contains=amenities)
-                return query_set
-          elif not params:
-                return Hotel.objects.all()
+                    queryset = queryset.filter(amenities__contains=amenities)
+          else:
+               queryset = Hotel.objects.all()
+          return queryset if queryset.exists() else Hotel.objects.none()
+
     
      def post(self, request, *args, **kwargs):
           """
