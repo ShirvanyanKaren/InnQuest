@@ -220,8 +220,16 @@ label {
   }
 }
 
-.amenities-checkbox {
-  .selected {
-    width: 100%;
+.admin-dash{
+  a {
+    cursor: pointer;
+    color: $text-color;
+    font-size: 20px;
+    padding: 5px;
+    &.active {
+     background-color: $secondary-color;
+      color: $primary-color;
+      border-radius: 5px;
+    }
   }
 }

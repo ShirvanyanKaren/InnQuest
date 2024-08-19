@@ -74,13 +74,49 @@ export const idbPromise = (storeName, method, object) => {
 };
 
 
+// utils/imageHelpers.js
 
+export const handleAddImageHelper = (e, setImages, setError) => {
+  const files = Array.from(e.target.files);
+  setError("");
 
+  const newImages = [];
 
+  for (const file of files) {
+    const reader = new FileReader();
 
+    if (file.size > 12000000) {
+      setError("Image must be less than 12MB.");
+      return;
+    }
 
+    if (!file.type.startsWith("image")) {
+      setError("File must be an image.");
+      return;
+    }
 
+    reader.onload = (e) => {
+      const fileData = {};
+      const data = e.target.result;
+      const name = file.name;
+      const blob = new Blob([data], { type: file.type });
+      const url = URL.createObjectURL(blob);
 
+      fileData['name'] = name;
+      fileData['data'] = data;
+      fileData['type'] = file.type;
+      fileData['url'] = url;
+
+      newImages.push(fileData);
+
+      if (newImages.length === files.length) {
+        setImages((prevImages) => [...prevImages, ...newImages]);
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+};
 
 
 export const stateAbbreviations = {

@@ -58,7 +58,7 @@ const ToolTip = (props) => {
                 </React.Fragment>
             }>
                 <FontAwesomeIcon icon={amenitiesMap[props.amenity]} 
-                style={{color : `${props?.color}`, borderRadius: "50%", padding: `${props?.color ? "10px" : "0"}`, backgroundColor: `${props?.backgroundColor ? props?.backgroundColor : ""}` }}
+                style={{color : `${props?.color}`, borderRadius: "50%", padding: `${props?.color ? "5px" : "0"}`, backgroundColor: `${props?.backgroundColor ? props?.backgroundColor : ""}` }}
                 />
                 <label className="form-check-label ms-2" htmlFor={props.amenity}>
                      {props?.description}

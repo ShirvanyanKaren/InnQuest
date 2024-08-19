@@ -20,6 +20,8 @@ const Home = () => {
     getGeoLocation();
   }, [allowLocation]);
 
+  console.log(hotels);
+
   return loading ? (
     <div className="d-flex justify-content-center">
       <div className="spinner-border" role="status">
@@ -33,7 +35,8 @@ const Home = () => {
         <h4 className="text-center mt-2">{location} Hotels</h4>
       )}
       <div className="row">
-        {hotels?.map((hotel) => (
+        {hotels?.map((hotel) => 
+        (
           <div className="col-4 mb-3" key={hotel.id}>
             <div className="card h-100">
               <ImagesSlider images={hotel.image_urls} />

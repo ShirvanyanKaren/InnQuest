@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { getReservationsByMonth, getReservationRevenueByMonth } from '../services/reservation';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement, ArcElement } from 'chart.js';
@@ -41,7 +41,7 @@ const AdminDash = () => {
     datasets: [
         {
         label: 'Revenue by Month',
-        data: [80,90,100,110,120,130,140,150,160,170,180,190],
+        data:[],
         fill: false,
         borderColor: 'rgba(75, 192, 192, 1)',
         tension: 0.1,
@@ -110,13 +110,13 @@ const AdminDash = () => {
     <div className="d-flex">
       <div className="sidebar bg-light p-3" style={{ width: '250px' }}>
         <h3>Dashboard</h3>
-        <ul className="list-unstyled">
+        <ul className="list-unstyled admin-dash">
         <li><a 
         onClick={() => setShowHotelCreate(true)}
-        className="text-dark text-decoration-none fs-5">Create Hotels</a></li>
-          <li><a href="#" className="text-dark text-decoration-none fs-5">Create Rooms</a></li>
-          <li><a href="#" className="text-dark text-decoration-none fs-5">Reservations</a></li>
-          <li><a href="#" className="text-dark text-decoration-none fs-5">Hotels</a></li>
+        className={` text-decoration-none ${showHotelCreate ? 'active' : ''}`}>Create Hotels</a></li>
+          <li><a href="#" className=" text-decoration-none">Create Rooms</a></li>
+          <li><a href="#" className=" text-decoration-none">Reservations</a></li>
+          <li><a href="#" className=" text-decoration-none">Hotels</a></li>
         </ul>
       </div>
       <div className="content dash-content p-4" style={{ width: '100%' }}>
