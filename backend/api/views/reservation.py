@@ -123,7 +123,7 @@ class ReservationAPIView(mixins.ListModelMixin,
         @return: List of permissions
         Description: This method returns a list of permissions based on the request method.
         """
-        if self.request.method in ['GET','PUT', 'DELETE','POST']:
+        if self.request.method in ['GET','PUT', 'DELETE',]:
             return [IsAuthenticated()]
         return [AllowAny()]
     

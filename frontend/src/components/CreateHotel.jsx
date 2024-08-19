@@ -220,7 +220,9 @@ const CreateHotel = ({ show, handleClose, edit, currHotel}) => {
             <div className="d-flex flex-wrap p-3">{amenitiesGrid}</div>
           </div>
           <div className="form-group d-flex flex-column">
-            <label htmlFor="">Add Rooms</label>
+            <label htmlFor="">
+              {edit ? "Edit" : "Add"} Rooms
+              </label>
             <button
               type="button"
               className="btn btn-primary mt-3"
@@ -229,7 +231,7 @@ const CreateHotel = ({ show, handleClose, edit, currHotel}) => {
               > <span className="">
                 <FontAwesomeIcon icon={faPlus} />
                 </span> 
-                Add Room
+                { edit ? "Edit" : "Add"} Room
               </button>
             </div>
             <div className="d-flex">
@@ -287,3 +289,5 @@ const CreateHotel = ({ show, handleClose, edit, currHotel}) => {
 };
 
 export default CreateHotel;
+
+
