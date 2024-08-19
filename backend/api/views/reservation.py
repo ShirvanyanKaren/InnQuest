@@ -1,8 +1,16 @@
 from rest_framework import generics, mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from api.serializers.reservation import ReservationSerializer
-from api.models import Reservation, Room
+from api.models import Reservation, Room, Hotel
 from django.http import JsonResponse, HttpResponse
+import smtplib, ssl, os, datetime as dt
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 class ReservationAPIView(mixins.ListModelMixin,
@@ -17,6 +25,96 @@ class ReservationAPIView(mixins.ListModelMixin,
     """
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    email_body = '''
+    <html>
+        <head>
+            <title>Reservation Confirmation</title>
+            <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700&display=swap" rel="stylesheet">
+            <style>
+                body {{
+                    font-family: "Nunito", sans-serif;
+                    margin: 0;
+                    padding: 0;
+                }}
+                body {{
+                    background-color: #f4f6f9;
+                }}
+                .container {{
+                    margin: 0 auto;
+                    padding: 20px;
+                    text-align: center;
+                    border: 1px solid #e1e1e1;
+                }}
+                h2 {{
+                    font-size: 24px;
+                    font-weight: bold;
+                }}
+                h3 {{
+                    font-size: 20px;
+                    font-weight: bold;
+                }}
+                p {{
+                    font-size: 16px;
+                    font-weight: bold;
+                }}
+                .header {{
+                    background-color: #004aad;
+                    color: white;
+                    padding: 10px;
+                    text-align: center;
+                    border-radius: 5px;
+                    box-shadow: 0 4px 6px 0 rgba(0,0,0,0.3);
+                    margin-bottom: 20px;
+                    height: fit-content;
+                    z-index: 1000;
+                }}
+                .inn {{
+                    color: #004aad;
+                    background-color: #f4f6f9;
+                    border-radius: 5px;
+                    margin-right: 1px;
+                }}
+                .content {{
+                    padding: 20px;
+                    border-radius: 5px;
+                }}
+                .image {{
+                    display: block;
+                    margin: 20px auto;
+                    width: 400px;
+                    object-fit: cover;
+                }}
+                .details {{
+                    margin: auto;
+                    width:40%;
+                    text-align: left;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1> <span
+                        class="inn">inn</span>Quest<span>.com</span>
+                </div>
+                <div class="content">
+                    <h2>Thank you for booking with us!</h2>
+                    <img src="{image_url}" alt="Hotel"
+                    class="image" />
+                    <h3>Your reservation at {hotel_name} has been confirmed.</h3>
+                    <div class="details">
+                    <p>Check-in: {check_in_date} at 3:00 PM</p>
+                    <p>Check-out: {check_out_date} at 11:00 AM</p>
+                    <p>Room Type: {roomtype}</p>
+                    <p>Number of Rooms: {num_of_rooms}</p>
+                    <p>Total Price: {total_price}</p>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </html>
+    '''
+
 
     def get_permissions(self):
         """
@@ -26,7 +124,7 @@ class ReservationAPIView(mixins.ListModelMixin,
         if self.request.method in ['GET','PUT', 'DELETE']:
             return [IsAuthenticated()]
         return [AllowAny()]
-
+    
     def get_queryset(self):
         """
         @return: List of reservations
@@ -69,6 +167,31 @@ class ReservationAPIView(mixins.ListModelMixin,
             reserved_rooms += reservation.num_of_rooms
         room = Room.objects.get(id=request_data['room'])
         return room.quantity - reserved_rooms
+    
+    def send_email(self, reservation):
+        """
+        @param reservation: Reservation object
+        @return: None
+        Description: This method sends an email to the user confirming their reservation.
+        """
+        hotel = Hotel.objects.get(id=reservation.hotel.id)
+        hotel_name = hotel.name
+        image_url = hotel.image_urls[0]
+        check_in_date = dt.datetime.strptime(reservation.check_in_date, '%Y-%m-%d').strftime('%B %d, %Y')
+        check_out_date = dt.datetime.strptime(reservation.check_out_date, '%Y-%m-%d').strftime('%B %d, %Y')
+        port = 465
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL(os.getenv("SMTP_HOST"), port,context=context) as server:
+            server.login(os.getenv("SMTP_EMAIL"), os.getenv("SMTP_PASSWORD"))
+            msg = MIMEMultipart()
+            msg['From'] = os.getenv("SMTP_EMAIL")
+            msg['To'] = reservation.email
+            msg['Subject'] = "Reservation Confirmation"
+            email_body = self.email_body.format(image_url=image_url, hotel_name=hotel_name, check_in_date=check_in_date, check_out_date=check_out_date, roomtype=reservation.room.type, num_of_rooms=reservation.num_of_rooms, total_price=f"${reservation.reservation_price:.2f}")
+            msg.attach(MIMEText(email_body, 'html'))
+            server.sendmail(os.getenv("SMTP_EMAIL"), reservation.email, msg.as_string
+            ())
+
 
     def post(self, request, *args, **kwargs):
         check_availability = self.check_availability(request.data)
@@ -84,6 +207,7 @@ class ReservationAPIView(mixins.ListModelMixin,
                 num_of_rooms=request.data['num_of_rooms'],
                 email=request.data['email'] if not self.request.user.is_authenticated else self.request.user.email
             )
+            self.send_email(reservation)
             return JsonResponse({'message': 'Reservation created successfully', 'reservation': ReservationSerializer(reservation).data}, status=201)
 
     def get(self, request, *args, **kwargs):
@@ -110,6 +234,7 @@ class ReservationAPIView(mixins.ListModelMixin,
         @exception: If user is authenticated, delete reservation
         """
         return self.destroy(request, *args, **kwargs)
+    
 
     def perform_create(self, serializer):
         """

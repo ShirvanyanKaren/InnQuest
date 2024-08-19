@@ -39,11 +39,18 @@ const handleQueryChange = (e) => {
               </a>
             </li>
             {Auth.loggedIn() ? (
+              <>
               <li className="nav-item">
                 <a className="nav-link" href="/" onClick={() => Auth.logout()}>
                   Logout
                 </a>
               </li>
+                <li className="nav-item">
+                <a className="nav-link" href="/reservations">
+                  Reservations
+                </a>
+              </li>
+              </>
             ) : (
               <>
                 <li className="nav-item">
@@ -56,11 +63,6 @@ const handleQueryChange = (e) => {
             <li className="nav-item">
               <a className="nav-link" href="/">
                 About
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/reservations">
-                Reservations
               </a>
             </li>
           </ul>

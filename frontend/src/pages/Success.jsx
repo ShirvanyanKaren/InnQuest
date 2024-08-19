@@ -13,8 +13,6 @@ const Success = () => {
     const [loading, setLoading] = useState(true);
     const [success, setSuccess] = useState(false);
 
-
-
     useEffect(() => {
         let reservation = localStorage.getItem("reservation");
         if (!reservation) window.location.href = "/";
