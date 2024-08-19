@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { Modal } from 'react-bootstrap';
-import { handleAddImageHelper } from '../utils/helpers';
+import { handleAddImageHelper, handleDeleteImageHelper } from '../utils/helpers';
+
 
 const CreateRoom = ({show, handleClose, setRoomsList}) => {
     const [error, setError] = useState("");
@@ -10,7 +11,7 @@ const CreateRoom = ({show, handleClose, setRoomsList}) => {
         quantity: 0,
         sleeps: 0,
         footage: 0,
-        room_images: [],
+        image_urls: [],
         beds: 0,
         bed_type: ""
     });
@@ -40,9 +41,16 @@ const CreateRoom = ({show, handleClose, setRoomsList}) => {
         handleClose();
     }
 
-    const handleAddRoomImage = (e) => {
-        handleAddImageHelper(e, (images) => setRoom({ ...room, room_images: images }), setError);
-    };
+    const handleAddImage = (e) => {
+        handleAddImageHelper(e, room, setRoom, setError);
+    }
+
+    const handleDeleteImage = (index) => {
+        handleDeleteImageHelper(index, room, setRoom);
+    }
+
+
+
 
     return (
         <Modal show={show} onHide={handleClose}>
@@ -133,15 +141,23 @@ const CreateRoom = ({show, handleClose, setRoomsList}) => {
                     </div>
                     <div className="form-group">
                         <label htmlFor="room_images">Room Images</label>
+                        {room.image_urls.length > 0 && room.image_urls.map((image, index) => (
+                            <div key={index} className="d-flex align-items-center">
+                                <img src={image.url} alt={image.name} style={{ width: "50px", height: "50px" }} />
+                                <button type="button" className="btn btn-danger btn-sm" onClick={() => handleDeleteImage(index)}>X</button>
+                            </div>
+                        ))}
+
+                    </div>
+                    <div className="form-group">
                         <input
                             type="file"
                             name="room_images"
                             id="room_images"
                             className="form-control"
-                            onChange={handleAddRoomImage}
+                            onChange={handleAddImage}
                         />
                     </div>
-                    
                     <button type="submit" 
                 
                     className="btn btn-primary">

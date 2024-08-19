@@ -76,11 +76,10 @@ export const idbPromise = (storeName, method, object) => {
 
 // utils/imageHelpers.js
 
-export const handleAddImageHelper = (e, setImages, setError) => {
+export const handleAddImageHelper = (e, object, setObject, setError) => {
   const files = Array.from(e.target.files);
   setError("");
 
-  const newImages = [];
 
   for (const file of files) {
     const reader = new FileReader();
@@ -107,16 +106,20 @@ export const handleAddImageHelper = (e, setImages, setError) => {
       fileData['type'] = file.type;
       fileData['url'] = url;
 
-      newImages.push(fileData);
+      
+      setObject({ ...object, image_urls: [...object.image_urls, fileData] });
 
-      if (newImages.length === files.length) {
-        setImages((prevImages) => [...prevImages, ...newImages]);
-      }
     };
 
     reader.readAsArrayBuffer(file);
   }
 };
+
+export const handleDeleteImageHelper = (index, object, setObject) => {
+  console.log(object);
+  const newImages = object.image_urls.filter((image, i) => i !== index);
+  setObject({ ...object, image_urls: newImages });
+}
 
 
 export const stateAbbreviations = {

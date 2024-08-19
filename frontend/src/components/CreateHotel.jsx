@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
 import { Modal } from "react-bootstrap";
+import { useState, useEffect, lazy } from "react";
 import { createHotel } from "../services/hotel";
 import { amenitiesMap } from "./ToolTip";
-import { uploadImages } from "../utils/s3";
+import { getImage, uploadImages } from "../utils/s3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { handleAddImageHelper, handleDeleteImageHelper } from "../utils/helpers";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import CreateRoom from "./CreateRoom";
+import fs from "fs";
 import ToolTip from "./ToolTip";
-import ImageUploader from './ImageUploader';
 
 const CreateHotel = ({ show, handleClose }) => {
   const [amenities, setAmenities] = useState([]);
@@ -34,6 +35,8 @@ const CreateHotel = ({ show, handleClose }) => {
     setAmenities([]); 
   }, [show]);
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -42,7 +45,7 @@ const CreateHotel = ({ show, handleClose }) => {
       hotel.state === "" ||
       hotel.description === "" ||
       hotel.country === "" ||
-      hotel.image_urls.length === 0
+      hotel.image_urls === ""
     ) {
       setError("Please fill out all fields.");
       return;
@@ -54,7 +57,7 @@ const CreateHotel = ({ show, handleClose }) => {
     const response = await createHotel(hotel);
     if (response.status === 201) {
       setSuccess(true);
-      handleClose();
+      set
     }
   };
 
@@ -83,16 +86,27 @@ const CreateHotel = ({ show, handleClose }) => {
     );
   });
 
+  const handleAddImage = (e) => {
+    handleAddImageHelper(e, hotel, setHotel, setError);
+  };
+
+  const handleDeleteImage = (index) => {
+    handleDeleteImageHelper(index, hotel, setHotel);
+  }
+  
   return (
     <Modal show={show} onHide={handleClose}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered>
+    size="lg"
+    aria-labelledby="contained-modal-title-vcenter"
+    centered>
+
       <Modal.Header closeButton>
         <Modal.Title>Create Hotel</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleSubmit} className="p-2">
+        <form onSubmit={handleSubmit}
+        className="p-2"
+        >
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input
@@ -152,16 +166,33 @@ const CreateHotel = ({ show, handleClose }) => {
               onChange={handleChange}
             />
           </div>
-
-          <ImageUploader
-            images={hotel.image_urls}
-            setImages={(images) => setHotel({ ...hotel, image_urls: images })}
-            setError={setError}
-            label="Hotel Images"
-          />
-
           <div className="form-group">
-            <label htmlFor="amenities" className="mt-1 mb-1">Amenities</label>
+            <label htmlFor="image">Images</label>
+            {hotel.image_urls.length > 0 && hotel.image_urls.map((image, index) => (
+                <div key={index} className="card w-50 mb-1">
+                    <img src={image.url} alt="hotel" style={{ width: "100px", objectFit: "cover"}} />
+                    <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => handleDeleteImage(index)}
+                    >
+                    Remove
+                    </button>
+                </div>
+                ))}
+            <input
+                type="file"
+                name="images"
+                id="images"
+                className="form-control"
+                onChange={handleAddImage}
+                multiple
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="amenities" className="mt-1 mb-1">
+              Amenities
+            </label>
             {amenities?.map((amenity) => (
               <div key={amenity}>
                 <p className="mt-0">{amenity}</p>
@@ -176,37 +207,47 @@ const CreateHotel = ({ show, handleClose }) => {
               className="btn btn-primary mt-3"
               onClick={() => setShowRoomsModal(true)}
               style={{ width: "30%" }}
-            > 
-              <span className="">
+              > <span className="">
                 <FontAwesomeIcon icon={faPlus} />
-              </span> 
-              Add Room
-            </button>
-          </div>
-          <div className="d-flex">
+                </span> 
+                Add Room
+              </button>
+            </div>
+            <div className="d-flex">
             {rooms?.map((room) => (
               <div key={room} className="card w-50 m-2">
                 <div className="card-body">
-                  <p className="mt-0">Room Type: {room.type}</p>
-                  <p className="mt-0">Price: {room.price}</p>
-                  <p className="mt-0">Sleeps: {room.sleeps}</p>
-                  <p className="mt-0">Footage: {room.footage}</p>
-                  <p className="mt-0">Beds: {room.beds}</p>
-                  <p className="mt-0">Bed Type: {room.bed_type}</p>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={() => {
+                <p className="mt-0">
+                    Room Type: {room.type}</p>
+                <p className="mt-0">
+                    Price: {room.price}</p>
+                <p className="mt-0">
+                    Sleeps:
+                    {room.sleeps}</p>
+                <p className="mt-0">
+                    Footage: {room.footage}</p>
+                <p className="mt-0">
+                    Beds: {room.beds}</p>
+                <p className="mt-0">
+                    Bed Type: {room.bed_type}</p>
+               </div>
+               <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => {
                     const newRooms = rooms.filter((r) => r !== room);
                     setRooms(newRooms);
-                  }}
+                }
+                }
                 >
-                  Remove
+                Remove
                 </button>
+
               </div>
             ))}
-          </div>
+            </div>
+
+
           <button
             type="submit"
             className="btn btn-primary mt-3"
@@ -222,6 +263,7 @@ const CreateHotel = ({ show, handleClose }) => {
         <CreateRoom show={showRoomsModal} handleClose={() => setShowRoomsModal(false)} setRoomsList={setRooms} />
       </Modal.Body>
     </Modal>
+
   );
 };
 
