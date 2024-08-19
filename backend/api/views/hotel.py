@@ -43,7 +43,7 @@ class HotelAPIView(mixins.ListModelMixin,
           """
           return Hotel.objects.filter(id=id)
      
-     def get_available_rooms(self, queryset, start_date, end_date, num_of_rooms, min_price, max_price):
+     def get_available_rooms(self, queryset, query_params):
           """
           @param queryset: Hotel object
           @param start_date: str
@@ -59,13 +59,13 @@ class HotelAPIView(mixins.ListModelMixin,
           for hotel in queryset:
                 reservations = Reservation.objects.filter(
                     hotel=hotel.id,
-                    check_in_date__lte=end_date,
-                    check_out_date__gte=start_date
+                    check_in_date__lte=query_params.check_in,
+                    check_out_date__gte=query_params.check_out
                 )
                 reserved_rooms = {}
                 for reservation in reservations:
                     reserved_rooms[reservation.room_id] = reserved_rooms.get(reservation.room_id, 0) + reservation.num_of_rooms
-                rooms = Room.objects.filter(hotel=hotel, price__gte=min_price, price__lte=max_price)
+                rooms = Room.objects.filter(hotel=hotel, price__gte=query_params['min_price'] if query_params.get('min_price') else 0, price__lte=query_params['max_price'] if query_params.get('max_price') else 1000)
                 available_rooms = []
                 for room in rooms:
                     reserved_count = reserved_rooms.get(room.id, 0)
@@ -73,7 +73,7 @@ class HotelAPIView(mixins.ListModelMixin,
                     room_data = RoomSerializer(room).data
                     room_data['available_rooms'] = available_count
                     available_rooms.append(room_data)
-                available_rooms = [room for room in available_rooms if room['available_rooms'] >= int(num_of_rooms)]
+                available_rooms = [room for room in available_rooms if room['available_rooms'] >= int(query_params['rooms'])]
                 hotel_serializer = HotelSerializer(hotel).data
                 hotel_serializer['rooms'] = available_rooms
                 hotels.append(hotel_serializer)
@@ -89,14 +89,7 @@ class HotelAPIView(mixins.ListModelMixin,
           """
           queryset = self.get_queryset()
           if 'check_in' in request.query_params and 'check_out' in request.query_params and 'rooms' in request.query_params:
-                available_rooms = self.get_available_rooms(
-                    queryset,
-                    request.query_params['check_in'],
-                    request.query_params['check_out'],
-                    request.query_params['rooms'],
-                    request.query_params['min_price'] if request.query_params.get('min_price') else 0,
-                    request.query_params['max_price'] if request.query_params.get('max_price') else 1000
-                )
+                available_rooms = self.get_available_rooms(queryset=queryset, query_params= request.query_params)
                 return Response(available_rooms)
           serializer = self.get_serializer(queryset, many=True)
           return Response(serializer.data)
