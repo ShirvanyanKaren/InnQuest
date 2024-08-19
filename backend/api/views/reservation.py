@@ -137,25 +137,6 @@ class ReservationAPIView(mixins.ListModelMixin,
                 return Response(revenue_by_month)
         return self.list(request, *args, **kwargs)
     
-    def booking_revenue_by_month(self, request):
-        """
-        @param request: Request object
-        @return: List of reservations
-        @precondition: User is superuser
-        Description: This method returns the revenue made by month.
-        """
-        query_set = Reservation.objects.all()
-        start = self.request.query_params.get('start')
-        end = self.request.query_params.get('end')
-        reservations = query_set.filter(check_in_date__gte=start)
-        months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-        revenue_by_month = {}
-        for reservation in reservations:
-            month = reservation.check_in_date.month
-            month_name = months[int(month) - 1]
-            revenue_by_month[month_name] = revenue_by_month.get(month_name, 0) + reservation.reservation_price
-        revenue_by_month = dict(sorted(revenue_by_month.items(), key=lambda x: months.index(x[0])))
-        return revenue_by_month
     
     def bookings_by_months(self, request):
         """

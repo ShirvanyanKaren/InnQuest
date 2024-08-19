@@ -65,10 +65,17 @@ h1, h2, h3, h4, h5, h6 {
     }
   }
 }
-.btn-primary {
-  color: $primary-color;
-  background-color: $secondary-color;
-  border-color: $secondary-color;
+.btn {
+  &.btn-primary {
+    border-color: $secondary-color;
+  }
+  &.btn-danger {
+    background-color: red;
+    border-color: red;
+  } 
+  &:hover {
+    opacity: 0.8;
+  }
   &.search-btn{
     border-radius: 20px;
     font-size: 1.2rem;
@@ -173,7 +180,6 @@ label {
 }
 
 .btn-primary {
- background-color: $secondary-color;
 }
 .reservation-details {
     li {
@@ -210,9 +216,6 @@ label {
   justify-content: space-between;
 }
 
-.sidebar {
-  
-}
 
 .dash-content {
   .card {
@@ -221,8 +224,12 @@ label {
 }
 
 .admin-dash{
+  li{
+    margin-top: 10px;
+  }
   a {
     cursor: pointer;
+    text-decoration: none;
     color: $text-color;
     font-size: 20px;
     padding: 5px;
@@ -233,3 +240,4 @@ label {
     }
   }
 }
+

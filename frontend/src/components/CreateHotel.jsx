@@ -1,6 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useState, useEffect, lazy } from "react";
 import { createHotel } from "../services/hotel";
+import { createRooms } from "../services/room";
 import { amenitiesMap } from "./ToolTip";
 import { getImage, uploadImages } from "../utils/s3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,54 +11,63 @@ import CreateRoom from "./CreateRoom";
 import fs from "fs";
 import ToolTip from "./ToolTip";
 
-const CreateHotel = ({ show, handleClose }) => {
+const CreateHotel = ({ show, handleClose, edit, currHotel}) => {
   const [amenities, setAmenities] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [hotel, setHotel] = useState({
     name: "",
     city: "",
     state: "",
-    description: "",
+    description:"",
     country: "",
     image_urls: [],
     address: "",
-    amenities: [],
+    amenities: []
   });
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [showRoomsModal, setShowRoomsModal] = useState(false);
 
+
+  useEffect(() => {
+    if (edit) {
+      console.log(currHotel);
+      setHotel(currHotel);
+      console.log(currHotel);
+      setAmenities(currHotel?.amenities);
+    }
+  }, [currHotel]);
+
   const handleChange = (e) => {
     setHotel({ ...hotel, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    setAmenities([]); 
-  }, [show]);
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    hotel.amenities = amenities;
     if (
       hotel.name === "" ||
       hotel.city === "" ||
       hotel.state === "" ||
       hotel.description === "" ||
       hotel.country === "" ||
-      hotel.image_urls === ""
+      hotel.amenities.length === 0 ||
+      hotel.image_urls.length === 0
+
     ) {
+      console.log(hotel);
       setError("Please fill out all fields.");
       return;
     }
-    const imageUrls = await uploadImages(hotel.image_urls);
-    hotel.amenities = amenities;
+    const imageUrls = hotel.image_urls.length ? await uploadImages(hotel.image_urls) : [];
     hotel.image_urls = imageUrls;
     console.log(hotel);
     const response = await createHotel(hotel);
+    console.log(response);
     if (response.status === 201) {
-      setSuccess(true);
-      set
+        const hotelId = response.data.id;
+        const responses = await createRooms(rooms, hotelId);
+        setSuccess(true);
     }
   };
 
@@ -79,8 +89,8 @@ const CreateHotel = ({ show, handleClose }) => {
         <ToolTip
           key={amenity}
           amenity={amenity}
-          color={amenities.includes(amenity) ? "#f7fafc" : ""}
-          backgroundColor={amenities.includes(amenity) ? "#004aad" : ""}
+          color={amenities?.includes(amenity) ? "#f7fafc" : ""}
+          backgroundColor={amenities?.includes(amenity) ? "#004aad" : ""}
         />
       </div>
     );
@@ -113,6 +123,7 @@ const CreateHotel = ({ show, handleClose }) => {
               type="text"
               name="name"
               id="name"
+              value={hotel?.name}
               className="form-control"
               onChange={handleChange}
             />
@@ -123,6 +134,7 @@ const CreateHotel = ({ show, handleClose }) => {
               type="text"
               name="city"
               id="city"
+              value={hotel?.city}
               className="form-control"
               onChange={handleChange}
             />
@@ -133,6 +145,7 @@ const CreateHotel = ({ show, handleClose }) => {
               type="text"
               name="state"
               id="state"
+              value={hotel?.state}
               className="form-control"
               onChange={handleChange}
             />
@@ -143,6 +156,7 @@ const CreateHotel = ({ show, handleClose }) => {
               type="text"
               name="address"
               id="address"
+              value={hotel?.address}
               className="form-control"
               onChange={handleChange}
             />
@@ -152,6 +166,7 @@ const CreateHotel = ({ show, handleClose }) => {
             <textarea
               name="description"
               id="description"
+              value={hotel?.description}
               className="form-control"
               onChange={handleChange}
             ></textarea>
@@ -162,18 +177,22 @@ const CreateHotel = ({ show, handleClose }) => {
               type="text"
               name="country"
               id="country"
+              value={hotel?.country}
               className="form-control"
               onChange={handleChange}
             />
           </div>
-          <div className="form-group">
+          <div className="row">
             <label htmlFor="image">Images</label>
-            {hotel.image_urls.length > 0 && hotel.image_urls.map((image, index) => (
-                <div key={index} className="card w-50 mb-1">
-                    <img src={image.url} alt="hotel" style={{ width: "100px", objectFit: "cover"}} />
+            {hotel?.image_urls?.length > 0 && hotel.image_urls.map((image, index) => (
+                <div key={index} className="card mb-1 flex-grow-1 p-3"
+                style={{width: "200px"}}
+                >
+                    <img src={image?.url ? image.url : image}
+                      alt="hotel" style={{objectFit: "cover"}} />
                     <button
                     type="button"
-                    className="btn btn-danger"
+                    className="btn btn-danger float-end"
                     onClick={() => handleDeleteImage(index)}
                     >
                     Remove

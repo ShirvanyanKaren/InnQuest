@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import { Modal } from 'react-bootstrap';
+import { getImage, uploadImages } from "../utils/s3";
 import { handleAddImageHelper, handleDeleteImageHelper } from '../utils/helpers';
 
 
@@ -12,6 +13,7 @@ const CreateRoom = ({show, handleClose, setRoomsList}) => {
         sleeps: 0,
         footage: 0,
         image_urls: [],
+        room_images: [],
         beds: 0,
         bed_type: ""
     });
@@ -32,11 +34,15 @@ const CreateRoom = ({show, handleClose, setRoomsList}) => {
             room.sleeps === 0 ||
             room.footage === 0 ||
             room.beds === 0 ||
-            room.bed_type === ""
+            room.bed_type === "" ||
+            room.image_urls.length === 0
         ) {
             setError("Please fill out all fields.");
             return;
         }
+        const imageUrls = room.image_urls.length ? await uploadImages(room.image_urls) : [];
+        room.room_images = imageUrls;
+        console.log(room);
         setRoomsList((prev) => [...prev, room]);
         handleClose();
     }
@@ -159,8 +165,7 @@ const CreateRoom = ({show, handleClose, setRoomsList}) => {
                         />
                     </div>
                     <button type="submit" 
-                
-                    className="btn btn-primary">
+                    className="btn btn-primary mt-3">
                         Submit
                     </button>
                 </form>

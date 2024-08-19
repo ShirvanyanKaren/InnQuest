@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Room
+from api.models import Room, Hotel
 
 class RoomSerializer(serializers.ModelSerializer):
     """
@@ -8,7 +8,7 @@ class RoomSerializer(serializers.ModelSerializer):
     Description: This serializer is responsible for converting Room model instances to and from JSON format. 
     It ensures that the data associated with Room instances is validated and properly serialized.
     """
-    
+    hotel = serializers.PrimaryKeyRelatedField(queryset=Hotel.objects.all())
     class Meta:
         """
         Description: Meta class that defines the model and fields to be included in the serialization process.

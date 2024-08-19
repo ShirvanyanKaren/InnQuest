@@ -83,7 +83,9 @@ class RoomAPIView(generics.GenericAPIView, mixins.ListModelMixin,
             return Room.objects.filter(id=params.get('room_id'))
         elif not params and self.request.user.is_authenticated:
             return Room.objects.all()
-        return Room.objects.none()
+        if not self.request.user.is_authenticated:
+            return Room.objects.none()
+        return Room.objects.all()
     
     def get(self, request, *args, **kwargs):
         """

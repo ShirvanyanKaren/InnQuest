@@ -85,3 +85,23 @@ export const createHotel = async (hotelInfo) => {
     }
 }
 
+export const editHotel = async (hotelInfo) => {
+    try {
+        console.log(hotelInfo);
+        const response = await api.put(`/api/hotel/${hotelInfo.id}/`, hotelInfo);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const deleteHotel = async (hotelId) => {
+    try {
+        const response = await api.delete(`/api/hotel/${hotelId}/`);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}
+
+

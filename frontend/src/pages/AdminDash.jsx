@@ -92,14 +92,42 @@ const AdminDash = () => {
     console.log(lineChartData, 'line chart data');
 
         const data = {
-            labels: ["Customer", "Business"],
+            labels: ["Chicago", "New York", "Los Angeles", "San Francisco", "Miami", "Las Vegas", "Seattle", "Boston", "Washington D.C.", "New Orleans", "San Diego", "Orlando", "Denver", "Austin", "Nashville", "Portland", "Atlanta", "Dallas", "Houston", "Phoenix"],
             datasets: [
               {
-                data: [12, 29],
+                data: [200, 50, 100, 40, 120, 80, 30, 60, 90, 70, 110, 20, 10, 150, 140, 130, 170, 180, 190, 160],
                 backgroundColor: [
                   'rgba(255, 99, 132, 0.2)',
                   'rgba(54, 162, 235, 0.2)',
-                ],
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(199, 199, 199, 0.2)',
+                  'rgba(83, 102, 255, 0.2)',
+                  'rgba(255, 255, 86, 0.2)',
+                  'rgba(102, 255, 102, 0.2)',
+                  'rgba(255, 102, 204, 0.2)',
+                  'rgba(204, 102, 255, 0.2)',
+                  'rgba(102, 255, 204, 0.2)',
+                  'rgba(255, 102, 102, 0.2)',
+                  'rgba(102, 153, 255, 0.2)',
+                  'rgba(255, 204, 102, 0.2)',
+                  'rgba(102, 255, 153, 0.2)',
+                  'rgba(204, 255, 102, 0.2)',
+                  'rgba(255, 102, 153, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 153, 102, 0.2)',
+                  'rgba(102, 102, 255, 0.2)',
+                  'rgba(255, 204, 153, 0.2)',
+                  'rgba(153, 255, 102, 0.2)',
+                  'rgba(255, 102, 204, 0.2)',
+                  'rgba(204, 153, 255, 0.2)',
+                  'rgba(102, 255, 102, 0.2)',
+                  'rgba(255, 153, 204, 0.2)',
+                  'rgba(204, 102, 255, 0.2)',
+                  'rgba(153, 255, 204, 0.2)'
+                ],                
                 borderWidth: 1,
               },
             ],
@@ -107,19 +135,8 @@ const AdminDash = () => {
 
 
   return (
-    <div className="d-flex">
-      <div className="sidebar bg-light p-3" style={{ width: '250px' }}>
-        <h3>Dashboard</h3>
-        <ul className="list-unstyled admin-dash">
-        <li><a 
-        onClick={() => setShowHotelCreate(true)}
-        className={` text-decoration-none ${showHotelCreate ? 'active' : ''}`}>Create Hotels</a></li>
-          <li><a href="#" className=" text-decoration-none">Create Rooms</a></li>
-          <li><a href="#" className=" text-decoration-none">Reservations</a></li>
-          <li><a href="#" className=" text-decoration-none">Hotels</a></li>
-        </ul>
-      </div>
-      <div className="content dash-content p-4" style={{ width: '100%' }}>
+    <div className="">
+      <div className="content dash-content p-4" style={{ width: '' }}>
         <div className="row">
           <div className="col-md-6">
             <div className="card mb-4">
@@ -138,7 +155,7 @@ const AdminDash = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6" style={{ height: '50%'}}>
             <div className="card mb-4">
               <div className="card-body">
                 <h5 className="card-title">Bookings by City</h5>
@@ -147,7 +164,10 @@ const AdminDash = () => {
             </div>
         </div>
         </div>
-        <CreateHotel show={showHotelCreate} setShow={setShowHotelCreate} handleClose={() => setShowHotelCreate(false)} />  
+        <CreateHotel 
+        edit={false}
+        currHotel={{}}
+        show={showHotelCreate} setShow={setShowHotelCreate} handleClose={() => setShowHotelCreate(false)} />  
       </div>
     </div>
   );
