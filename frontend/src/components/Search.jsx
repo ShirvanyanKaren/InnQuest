@@ -73,7 +73,7 @@ const Search = () => {
                   />
                   </div>
                 </div>
-                <div className="col-2">
+                <div className="col-2 room-number-search">
                   <label htmlFor="Number of Rooms"> Rooms</label>
                   <input
                     type="number"
@@ -87,7 +87,7 @@ const Search = () => {
                     }
                   />
                 </div>
-                <div className="col-2 mt-3">
+                <div className="col-2 mt-3 search-btn-box">
                 <button type="submit" className="btn btn-primary search-btn">
                   Search
                 </button>

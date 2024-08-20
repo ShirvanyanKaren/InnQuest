@@ -85,8 +85,8 @@ const Login = () => {
 
     
     return (
-        <div className="container mt-5 w-50">
-          <div className="card p-4">
+        <div className=" mt-5 d-flex justify-content-center">
+          <div className="card login-card p-4">
             <ul className="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
               <li className="nav-item" role="presentation">
                 <button

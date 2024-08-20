@@ -123,19 +123,25 @@ class ReservationAPIView(mixins.ListModelMixin,
         @return: List of permissions
         Description: This method returns a list of permissions based on the request method.
         """
-        if self.request.method in ['GET','PUT', 'DELETE',]:
+        if self.request.method in ['PUT', 'DELETE']:
             return [IsAuthenticated()]
         return [AllowAny()]
     
     def list(self, request, *args, **kwargs):
         if request.user.is_superuser:
-            if 'start' and 'end' in request.query_params:
+            if 'start' in request.query_params and 'end' in request.query_params:
                 reservations_by_month = self.bookings_by_months(request)
                 return Response(reservations_by_month)
             if 'revenue_start' in request.query_params:
                 revenue_by_month = self.booking_revenue_by_month(request)
                 return Response(revenue_by_month)
-        return self.list(request, *args, **kwargs)
+            else:
+                return self.list_all(request, *args, **kwargs)
+        else:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+
     
     
     def bookings_by_months(self, request):
@@ -246,11 +252,12 @@ class ReservationAPIView(mixins.ListModelMixin,
             return JsonResponse({'message': 'Reservation created successfully', 'reservation': ReservationSerializer(reservation).data}, status=201)
 
     def get(self, request, *args, **kwargs):
-        """
-        @param request: Request object
-        @return: List of reservations
-        """
-        return self.list(request, *args, **kwargs)
+        if 'pk' in kwargs:
+            # If a primary key is provided, use the RetrieveModelMixin
+            return self.retrieve(request, *args, **kwargs)
+        else:
+            # If no primary key is provided, list all reservations
+            return self.list(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         """
