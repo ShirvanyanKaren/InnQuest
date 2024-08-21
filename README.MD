@@ -23,7 +23,7 @@ InnQuest hotels is a hotel reservation system with integrations made for admin a
 * [Installation](#installation)
 * [Usage](#usage)
 * [Setup-and-Deployment](#setup-and-deployment)
-* [Key-Features]
+* [Key-Features](#key-features)
 * [Contributions](#contributions)
 * [Credits](#credits)
 * [Tests](#tests)
