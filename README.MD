@@ -24,8 +24,8 @@ InnQuest hotels is a hotel reservation system with integrations made for admin a
 
 * [Installation](#installation)
 * [Usage](#usage)
-* [Setup-and-Deployment](#setup-and-deployment)
-* [Key-Features](#key-features)
+* [Setup and Deployment](#setup-and-deployment)
+* [Key Features](#key-features)
 * [Contributions](#contributions)
 * [Credits](#credits)
 * [Tests](#tests)
@@ -34,29 +34,16 @@ InnQuest hotels is a hotel reservation system with integrations made for admin a
 
 ## Installation
 
+Before installing, esnure that you have [NodeJS](https://nodejs.org/en/download/package-manager), [Python](https://www.python.org/downloads/release/python-3125/), and [PostgreSQL](https://www.postgresql.org/download/) (if using locally) installed. 
+
+```git clone git@github.com:ShirvanyanKaren/InnQuest.git```
+
 To install first clone the repository from github. Then open the project in VS code, or IDE of your choice and run the command npm install which will install all the dependencies for python venv for the backend and react frontend. 
 
 ## Setup and Deployment 
 
 To use the project, set up a .env file with the following environments for your frontend and backend: Make sure you have Postgresql installed if you are using a local database and input the listed details above.
 
-If you plan on deploying, you can serve the vite static dist folder and backend server seperately using [Netlify](https://www.netlify.com/) and/ or [Heroku](https://www.heroku.com/) or as one project with [Choreo](https://choreo.dev/). 
-
-For deploying the frontend, make sure to specify the run and build command in your settings on the hosting site. With vite, it's npm run build.
-```json
-"build": "vite build",
-```
-
-For deploying the backend, if you are using Heroku add the following files
-### runtime.txt
-```txt
-python-3.11.5
-```
-
-### Procfile
-```yaml
-web gunicorn backend.wsgi:application --log-file - 
-```
 
 ### Environment Variables
 For both local and remote use, you will need to setup the following environmental variables in a .env file.
@@ -84,6 +71,24 @@ SMTP_HOST='smtp.gmail.com'
 SMTP_PORT=465
 SMTP_EMAIL=example@gmail.com
 SMTP_PASSWORD='your_smtp_password'
+```
+
+If you plan on deploying, you can serve the vite static dist folder and backend server seperately using [Netlify](https://www.netlify.com/) and/ or [Heroku](https://www.heroku.com/) or as one project with [Choreo](https://choreo.dev/). 
+
+For deploying the frontend, make sure to specify the run and build command in your settings on the hosting site. With vite, it's npm run build.
+```json
+"build": "vite build",
+```
+
+For deploying the backend, if you are using Heroku add the following files
+### runtime.txt
+```txt
+python-3.11.5
+```
+
+### Procfile
+```yaml
+web: gunicorn backend.wsgi:application --log-file - 
 ```
 
 ## Key Features
