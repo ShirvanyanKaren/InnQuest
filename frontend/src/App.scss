@@ -241,3 +241,84 @@ label {
   }
 }
 
+.hamburger {
+  display: none;
+
+}
+
+
+@media only screen and (max-width: 1000px) {
+  .hamburger {
+    display: block;
+    position: absolute;
+    cursor: pointer;
+    right: 5%;
+  }
+
+  .nav-links {
+    position: fixed;
+    right: -100%;
+    top: 0;
+    background-color: $primary-color;
+    width: 50%;
+    height: 100vh;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 20px;
+    transition: transform 0.5s ease-in-out, right 0.5s ease-in-out;
+
+    &.show {
+      right: 0;
+    }
+
+    .nav-item {
+      text-align: center;
+    }
+  }
+}
+
+
+@media only screen and (max-width: 768px) {
+.hotels-home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .hotel-card {
+    margin: 10px;
+    width: 100%;
+  }
+
+}
+.search-contents{
+  .room-number-search{
+    text-align: center;
+    width: 100%;
+  }
+  .search-btn-box{
+    width: 100%;
+  }
+}
+.hotel-main-image {
+  height: 100%;
+  width: 100%;
+}
+.hotel-images {
+  width: 100%;
+}
+.amenities-hotel-card{
+  label{
+    font-size: 10px;
+    margin: 0px;
+  }
+  .amenities-icon {
+    width: 100%;
+  }
+}
+.login-card {
+  width: 80vw;
+
+}
+}

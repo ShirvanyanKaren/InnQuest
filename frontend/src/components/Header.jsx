@@ -3,6 +3,9 @@ import { Link, Outlet } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import InnQuestLogo from "../assets/Inn.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { ClickAwayListener } from "@mui/material";
 import Auth from "../utils/auth";
 
 
@@ -10,6 +13,8 @@ const Header = () => {
 const [query, setQuery] = useState('');
 const [queryResults, setQueryResults] = useState([]);
 const location = useLocation();
+const [hamburger, setHamburger] = useState(false);
+const [clickedAway, setClickedAway] = useState(false);
 
 const handleQueryChange = (e) => { 
     setQuery(e.target.value);
@@ -23,7 +28,23 @@ const handleQueryChange = (e) => {
   window.location.replace(`/search/${query}`);
 }
 
+const handleHamburger = () => {
+  setHamburger(!hamburger);
+}
+
+
+const handleClickAway = () => {
+  setTimeout(() => {
+  setHamburger(false);
+  }, 50);
+}
+
+
+
+
+
   return (
+
     <div className={`navbar navbar-expand-lg navbar-light bg-light w-100`}>
       <div className="container">
         <a className="navbar-brand" href="/">
@@ -32,7 +53,8 @@ const handleQueryChange = (e) => {
           </span>
           Quest&nbsp;{location.pathname === "/admin" ? "Hotel Management" : "Inn"}
         </a>
-        <div className="nav-links">
+
+        <div className={`nav-links ${hamburger ? "show" : ""}`}>
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
               <a className="nav-link" href="/">
@@ -68,6 +90,13 @@ const handleQueryChange = (e) => {
             </li>
           </ul>
         </div>
+        <ClickAwayListener onClickAway={handleClickAway}>
+        <div className="hamburger" onClick={handleHamburger}>
+          <FontAwesomeIcon icon={faBars} 
+          size="3x"
+          />
+        </div>
+        </ClickAwayListener>
     </div>
     </div>
   );

@@ -34,10 +34,10 @@ const Home = () => {
       {location && (
         <h4 className="text-center mt-2">{location} Hotels</h4>
       )}
-      <div className="row">
+      <div className="row hotels-home">
         {hotels?.map((hotel) => 
         (
-          <div className="col-4 mb-3" key={hotel.id}>
+          <div className="col-4 mb-3 hotel-card" key={hotel.id}>
             <div className="card h-100">
               <ImagesSlider images={hotel.image_urls} />
               <div className="card-body d-flex flex-column">
