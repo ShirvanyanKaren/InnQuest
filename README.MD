@@ -86,17 +86,96 @@ SMTP_PASSWORD='your_smtp_password'
 
 ## Key Features
 
+### Model View Controller
+![MVC](/images/MVC.png)
+The Model View Controller (MVC) design patter is utilized in the project to acconmplish the above user stories and features.
+
+
+
+#### Model
+Our models are represented in our Postgresql database, where we can perform CRUD operations based on the actions of the client enforced by the 
+```py
+class Hotel(models.Model):
+    """  
+    Hotel
+    07/24/2024
+    Karen Shirvanyan & Robert Paronyan
+    Hotel model that will be used for DB, backend and front end. This defines what attributes the Hotel class contains
+
+    """
+    name = models.CharField(max_length=100, default=None)
+    address = models.CharField(max_length=100, default=None)
+    state= models.CharField(max_length=100, default=None)
+    city = models.CharField(max_length=100, default=None)
+    amenities = ArrayField(models.CharField(max_length=100, blank=True, null=True), default=list)
+    description = models.TextField(default=None, null=True)
+    country = models.CharField(max_length=100, default=None)
+    image_urls = ArrayField(models.CharField(max_length=300), default=list)
+
+```
+
+### Views
+The router below demonstrates our views via React DOM (Document Object Model), representing the entire UI displayed to the client.
+```jsx
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    errorElement: <ErrorPage/>,
+    children : [
+      {
+        indexes: true, 
+        path: '/',
+        element: <Home />
+      },
+      {
+        path: '/search',
+        element: <Hotels />
+      },
+      ...
+    ]
+  }
+]
+);
+
+```
+
+### Controller
+The controller is demonstrated below as our Django API, enabling the client to make HTTP requests like ```GET, PUT, DELETE, POST, HEAD```. The Hotel API class below demonstrates such methods via Object Oriented design.
+```py
+class HotelAPIView(mixins.ListModelMixin,
+                     mixins.CreateModelMixin,
+                     mixins.DestroyModelMixin,
+                     generics.GenericAPIView):
+     queryset = Hotel.objects.all()
+     serializer_class = HotelSerializer 
+     ...
+     def post(self, request, *args, **kwargs):
+          return self.create(request, *args, **kwargs)
+    
+     def get(self, request, *args, **kwargs):
+          return self.list(request, *args, **kwargs)
+    
+     def delete(self, request, *args, **kwargs):
+          if request.user.is_superuser:
+               self.destroy(request, *args, **kwargs)
+               return Response({'message': 'Hotel deleted successfully'})
+          return Response({'message': 'You are not authorized to delete this hotel'}, status=403)
+
+```
+
+### MVC in the form of a User Story
 | ```As a user``` | ```I want to be able to search and filter hotels``` | ```So that I can find the best hotel for my preferences``` |
 | --- | --- | --- |
-
 ### Searching Hotel
 The user can choose the search for hotels given the name of the city or state that the hotel is located in and specify the check-in, check-out, and number of rooms.
 
 ![Searching](/images/Searching.png)
+
+Client makes a request to get hotels based on the search parameters they enters. This request is handled by the **Controller**, in this case the **Hotel API controller**.
 ```js
- export const getHotelsByCity = async (params) => {
+ export const getHotels= async (params) => {
     try {
-        console.log(params);
         const response = await api.get("/api/hotel/", {
             params: params
         });
@@ -107,6 +186,8 @@ The user can choose the search for hotels given the name of the city or state th
 }
 ```
 
+Parameters entered by client accessed through URL.
+
 ```jsx
   const [search, setSearch] = useState({
     query: params.get("query") || "",
@@ -116,10 +197,11 @@ The user can choose the search for hotels given the name of the city or state th
   });
 ```
 
-### Filterin Hotels
+### Filtering Hotels
 The user can then filter the hotels based on services like the amenities offered or by price of the rooms.
 ![Filtering](/images/Filtering.png)
 
+The client request is handled by the controller which accesses the **Model**, in this case the **Hotel model**, and returns a response based on the client's request parameters.
 ```py
      def get_queryset(self):
           """
@@ -127,10 +209,10 @@ The user can then filter the hotels based on services like the amenities offered
           Description: This method returns a list of hotels based on the query params.
           """
           params = self.request.query_params
-          
           if params.get('hotel_id'):
                queryset = self.get_by_id(params.get('hotel_id'))
           elif params.get('query'):
+            #hotel model below is accessed within the Hotel Controller to filter and return appropriate response to client based on their request params. 
                queryset = Hotel.objects.filter(city__icontains=params.get('query')) | Hotel.objects.filter(state__icontains=params.get('query'))
                if params.get('amenities'):
                     amenities = params.get('amenities').split(',')
@@ -145,6 +227,41 @@ The user can then filter the hotels based on services like the amenities offered
 ### Choosing Hotel
 The user can then choose the hotel they want to stay at or view and are then presented with a list of rooms offered at the hotel.
 ![Choosing](/images/Choosing.png)
+
+After the client requests a certain hotel and its listed rooms, this request is handled by the **Hotel API controller** that returns said response by filtering through the models based on Primary Key (PK). The client's request then returns a response that contains data that is then presented to the client as a **View**.
+
+```jsx
+  useEffect(() => {
+    const hotelId = window.location.pathname.split("/")[2];
+    const params = new URLSearchParams(location.search);
+    params.set("hotel_id", hotelId);
+    setHotelId(hotelId);
+    getHotelRooms(params).then((response) => {
+      setRooms(response?.data);
+      setLoading(false);
+    });
+  }, [params]);
+...
+    return (
+    <>
+    {rooms.map(room => (
+      <div className="col-md-4" key={room.id}>
+        <div className="card mt-3">
+          <ImagesSlider images={room.room_images} />
+          <div className="card-body" key={room.id}>
+            <h5 className="card-title">{room.type}</h5>
+            <div className="d-flex flex-column">
+            <ToolTip amenity={"Bed"} description={`${room.beds} ${room.bed_type} ${room.beds > 1 ? "Beds" : "Bed"}`} />
+            <ToolTip amenity={"Guests"} description={`Sleeps ${room.sleeps}`} />
+            <ToolTip amenity={"Footage"} description={`${room.footage} sq ft`} />
+            </div>
+            ...
+            </div>
+            </div>
+        </div>
+    ))})
+
+```
 
         
 ## Contributions 
