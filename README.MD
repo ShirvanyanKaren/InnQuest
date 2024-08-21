@@ -18,6 +18,8 @@
 
 InnQuest hotels is a hotel reservation system with integrations made for admin and customers wanting to reserve hotels. Customers can create, update, and and cancel reservations for hotels they search for through  filters like amenities, price,and location. The admin panel includes visualzied data for the company's performance. This project is a React + Django web app with the integration of various technologies such as aws-sdk, google geolocation, sass, bootstrap, vite, stripe, and more.
 
+[Deployed Site](https://innquest.lol)
+
 ## Table of Contents
 
 * [Installation](#installation)
@@ -92,7 +94,7 @@ The Model View Controller (MVC) design patter is utilized in the project to acco
 
 
 
-#### Model
+### Model
 Our models are represented in our Postgresql database, where we can perform CRUD operations based on the actions of the client enforced by the 
 ```py
 class Hotel(models.Model):
@@ -151,7 +153,11 @@ class HotelAPIView(mixins.ListModelMixin,
      serializer_class = HotelSerializer 
      ...
      def post(self, request, *args, **kwargs):
-          return self.create(request, *args, **kwargs)
+        if request.user.is_superuser:
+            self.create(request, *args, **kwargs)
+            return Response({'message': 'Hotel created successfully'})
+        else:
+            return Response({'message': 'You are not authorized to create a hotel'}, status=403)
     
      def get(self, request, *args, **kwargs):
           return self.list(request, *args, **kwargs)
@@ -160,7 +166,8 @@ class HotelAPIView(mixins.ListModelMixin,
           if request.user.is_superuser:
                self.destroy(request, *args, **kwargs)
                return Response({'message': 'Hotel deleted successfully'})
-          return Response({'message': 'You are not authorized to delete this hotel'}, status=403)
+          else:
+               return Response({'message': 'You are not authorized to delete this hotel'}, status=403)
 
 ```
 
