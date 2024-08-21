@@ -74,8 +74,6 @@ export const idbPromise = (storeName, method, object) => {
 };
 
 
-// utils/imageHelpers.js
-
 export const handleAddImageHelper = (e, object, setObject, setError) => {
   const files = Array.from(e.target.files);
   setError("");

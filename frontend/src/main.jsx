@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from './App';
 import ErrorPage from "./pages/ErrorPage";
@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Reservations from "./pages/Reservations";
 import AdminDash from "./pages/AdminDash";
 import HotelsAdmin from "./pages/HotelsAdmin";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -53,12 +54,12 @@ const router = createBrowserRouter([
       },
       {
         path: '/admin',
-        element: <AdminDash />
+        element: <ProtectedRoute component={AdminDash} />
 
       },
       {
         path: '/admin/hotels',
-        element: <HotelsAdmin />
+        element: <ProtectedRoute component={HotelsAdmin} />
       }
     ]
   }
